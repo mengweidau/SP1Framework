@@ -8,7 +8,7 @@
 #include <sstream>
 
 double  g_dElapsedTime;
-double waitTime;
+double timeToWait;
 double  g_dDeltaTime;
 SKeyEvent g_skKeyEvent[K_COUNT];
 SMouseEvent g_mouseEvent;
