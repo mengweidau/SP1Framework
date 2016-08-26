@@ -3,7 +3,7 @@
 //
 #include "game.h"
 #include "Framework\console.h"
-//#include "dialogue.h"
+#include "dialogue.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -32,6 +32,7 @@ bool canPress = true;
 SGameChar   g_sChar;
 SGameChar	g_block[blockNum];
 SGameNPC _NPC[npcNum];
+Fairy _fairy;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -450,30 +451,21 @@ void moveCharacter()
 		}
 	}
 
-	/*for (int i = 0; i < npcNum; i++)//loop 2 times
+	for (int i = 0; i < npcNum; i++)
 	{
 		if (!(g_sChar.m_cLocation.X > (_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
 			!(g_sChar.m_cLocation.Y > (_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
 		{
 			if (g_abKeyPressed[K_SPACE])
 			{
+				waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
 				bSomethingHappened = true;
-
-				switch (i)
-				{
-				case 0:
-					_NPC[0].talked = true;
-					_NPC[0].tolerance++;
-					break;
-				case 1:
-					_NPC[1].talked = true;
-					_NPC[1].tolerance++;
-					break;
-				}
+				_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
+				_NPC[i].tolerance++;
 			}
 		}
 	}
-	*/
+	
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
@@ -962,8 +954,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-	//renderNPC();		//render npc 
-	//renderDialogue();	//render dialogue
+	renderDialogue(&_fairy);	//render dialogue
 	renderblocks();		//render blocks
 	renderVision(_NPC); // Fog Of War
 	renderBattery(); // Flashlight battery
@@ -1162,21 +1153,23 @@ void renderToScreen()
 }
 
 //interaction with the npc and fairy
-void renderDialogue()
+void renderDialogue(Fairy *_fairy)
 {
-	/*COORD c = g_Console.getConsoleSize();
-	c.X = (c.X + 1);
+	//npc dialogue position
+	COORD c = g_Console.getConsoleSize();
+	c.X = 50;
 	c.Y = (c.Y / 2) + 7;
 	string value;
 
+	//checks each npc's condition
 	for (int i = 0; i < npcNum; i++)
 	{
 		if (_NPC[i].talked == true)
 		{
-			value = dialogue(_NPC[i].tolerance);
+			value = dialogue(_NPC[i].tolerance, _NPC);
 			g_Console.writeToBuffer(c, value);
 		}
-	}*/
+	}
 }
 
 void beginningcutscene() //beginning cutscence 

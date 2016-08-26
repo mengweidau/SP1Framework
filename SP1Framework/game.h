@@ -195,7 +195,6 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 
 void renderDialogue(Fairy *_fairy);		//render the dialouge of the npc
-void renderNPC();			//render NPC
 void Npc(SGameNPC _NPC[]);					//game logic for the npc
 void timeDelay(SGameNPC _NPC[]);			//duration of the dialogue
 void renderblocks();		//render the blocks in game

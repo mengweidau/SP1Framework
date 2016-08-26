@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="Battery.h" />
     <ClInclude Include="blocks.h" />
+    <ClInclude Include="dialogue.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />

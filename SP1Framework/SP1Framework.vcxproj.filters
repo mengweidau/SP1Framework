@@ -95,5 +95,8 @@
     <ClInclude Include="pressureplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dialogue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
