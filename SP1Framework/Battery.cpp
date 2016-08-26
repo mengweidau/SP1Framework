@@ -7,7 +7,7 @@ void renderBattery()
 	ss << std::fixed << std::setprecision(3);
 	ss << life << "Battery Life";
 	c.X = g_Console.getConsoleSize().X;
-	c.Y = 0;
+	c.Y = -1;
 	g_Console.writeToBuffer(c, ss.str());
 }
 void Batterylife()
