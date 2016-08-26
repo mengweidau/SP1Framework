@@ -32,6 +32,7 @@ enum EKEYS
 	K_BACK,
 	K_LEADERBOARD,
 	K_CREDITS,
+	K_FLASH,
 	K_COUNT,
 };
 

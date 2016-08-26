@@ -3,14 +3,16 @@
 //
 #include "game.h"
 #include "Framework\console.h"
-#include "dialogue.h"
+//#include "dialogue.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <string>
 #include "pressureplate.h"
-
+#include "Battery.h"
+#include "Vision.h"
+#include "Leaderboard.h"
 using namespace std;
 
 char ani[77][19];
@@ -19,13 +21,14 @@ EMAPS currentMap = Map1;
 ESCENES currentScene = SCENE1;
 
 double  g_dElapsedTime;
+double g_dElapsedTimeSec = g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 
 // Game specific variables here
 SGameChar   g_sChar;
 SGameChar	g_block[blockNum];
-SGameNPC _NPC[npcNum];
+//SGameNPC _NPC[npcNum];
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -53,7 +56,7 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"Consolas");
-	 Npc();
+	 //Npc();
 	 beginningcutscene();
  }
 
@@ -92,10 +95,12 @@ void getInput( void )
 
 	g_abKeyPressed[K_SELECTUP] = isKeyPressed(0x57);
 	g_abKeyPressed[K_SELECTDOWN] = isKeyPressed(0x53);
+	g_abKeyPressed[K_FLASH] = isKeyPressed(0x46);
 
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+
 }
 
 //--------------------------------------------------------------
@@ -116,8 +121,10 @@ void update(double dt)
 {
     // get the delta time
     g_dElapsedTime += dt;
-    g_dDeltaTime = dt;
-	timeDelay();
+	g_dDeltaTime = dt;
+	g_dElapsedTimeSec += dt;
+	//timeDelay();
+	Batterylife();
 
     switch (g_eGameState)
     {
@@ -462,7 +469,7 @@ void moveCharacter()
 		}
 	}
 
-	for (int i = 0; i < npcNum; i++)//loop 2 times
+	/*for (int i = 0; i < npcNum; i++)//loop 2 times
 	{
 		if (!(g_sChar.m_cLocation.X > (_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
 			!(g_sChar.m_cLocation.Y > (_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
@@ -485,7 +492,7 @@ void moveCharacter()
 			}
 		}
 	}
-
+	*/
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
@@ -499,11 +506,16 @@ void moveCharacter()
 
 void processUserInput()
 {
-    // quits the game if player hits the escape key
-    if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+	// quits the game if player hits the escape key
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_bQuitGame = true;
+		if (g_dElapsedTimeSec != 0)
+		{
+			leaderboard(to_string(g_dElapsedTimeSec));
+		}
+	}
 }
-
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
@@ -819,7 +831,7 @@ void renderSelectmodeLogic()
 	{
 		setBounceTime(0.3);
 		g_eGameState = S_GAME;
-		g_dElapsedTime = 0;
+		g_dElapsedTimeSec = 0;
 		g_dBounceTime = 0;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
@@ -890,29 +902,6 @@ void renderSelectmode4Logic()
 	}
 }
 
-void renderLeaderboard()
-{
-	COORD c = g_Console.getConsoleSize();
-
-	c.Y = 0;
-	c.X = c.X / 2 - 25;
-
-	string line;
-	ifstream myfile("leaderboard.txt");
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
-		{
-			g_Console.writeToBuffer(c, line, 0x37);
-			c.Y++;
-		}
-		myfile.close();
-	}
-
-	c.Y = 22;
-	c.X = 70;
-	g_Console.writeToBuffer(c, "Back", 0x74);
-}
 
 void renderLeaderboardlogic()
 {
@@ -995,6 +984,8 @@ void renderGame()
 	renderNPC();		//render npc 
 	renderDialogue();	//render dialogue
 	renderblocks();		//render blocks
+	renderVision(); // Fog Of War
+	renderBattery(); // Flashlight battery
 }
 
 void maps()
@@ -1122,7 +1113,7 @@ void renderMap()
 				maze[x][y] = '*';
 			}
 			c.X = x;
-			g_Console.writeToBuffer(c, maze[x][y]);
+			g_Console.writeToBuffer(c, maze[x][y], 0x00);
 		}
 	}
 	c.Y += 1;
@@ -1141,7 +1132,7 @@ void renderCharacter()
 void renderNPC()
 {
 	// Draw the location of the Npc
-	WORD charColor = 0x0D;
+	/*WORD charColor = 0x0D;
 	for (int i = 0; i < 2; i++)
 	{
 		if (currentMap == Map1)
@@ -1152,7 +1143,7 @@ void renderNPC()
 		{
 			g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)65, charColor);
 		}
-	}
+	}*/
 }
 
 void renderFramerate()
@@ -1167,12 +1158,14 @@ void renderFramerate()
 	g_Console.writeToBuffer(c, ss.str());
 
 	// displays the elapsed time
-	ss.str("");
-	ss << " " << g_dElapsedTime << "secs ";
-	c.X = c.X / 2 - 4;
-	c.Y = 24;
-	g_Console.writeToBuffer(c, ss.str(), 0x70);
-		
+	if (g_eGameState == S_GAME)
+	{
+		ss.str("");
+		ss << " " << g_dElapsedTimeSec << "secs ";
+		c.X = c.X / 2 - 4;
+		c.Y = 24;
+		g_Console.writeToBuffer(c, ss.str(), 0x70);
+	}
 }
 
 void renderToScreen()
@@ -1184,7 +1177,7 @@ void renderToScreen()
 //interaction with the npc and fairy
 void renderDialogue()
 {
-	COORD c = g_Console.getConsoleSize();
+	/*COORD c = g_Console.getConsoleSize();
 	c.X = (c.X + 1);
 	c.Y = (c.Y / 2) + 7;
 	string value;
@@ -1196,7 +1189,7 @@ void renderDialogue()
 			value = dialogue(_NPC[i].tolerance);
 			g_Console.writeToBuffer(c, value);
 		}
-	}
+	}*/
 }
 
 void beginningcutscene() //beginning cutscence 
