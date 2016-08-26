@@ -297,6 +297,15 @@ void gameplay()         // gameplay logic
 	blocks();			// blocks to be continuously updated due to movement
 	switches();			// so it can always update 
 	pressureplate();	// plates updated continuously for the true and false conditions
+
+	for (int i = 0; i < blockNum; i++)
+	{
+		if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
+		{
+			g_block[i].m_cLocation.X = 35;
+			g_block[i].m_cLocation.Y = 7;
+		}
+	}
 }
 
 void moveCharacter()
@@ -312,11 +321,11 @@ void moveCharacter()
 
 	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
 	{
-		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || 
+		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' ||  //collision with wall, gate 1, gate 2
 			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' || 
 			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
 		{
-			for (int i = 0; i < blockNum; i++)
+			for (int i = 0; i < blockNum; i++) //block pushing 
 			{
 				if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
 					g_sChar.m_cLocation.Y - 1 == g_block[i].m_cLocation.Y)
@@ -324,19 +333,14 @@ void moveCharacter()
 					g_block[i].m_cLocation.Y--;
 					bSomethingHappened = true;
 				}
-				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-				{
-					g_block[i].m_cLocation.X = 35;
-					g_block[i].m_cLocation.Y = 7;
-				}
 			}
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
+			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.') //movement slowdown
 			{
 				bSomethingHappened = false;
 				slowingdwn = true;
 				g_sChar.m_cLocation.Y--;
 			}
-			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			else 
 			{
 				bSomethingHappened = true;
 				slowingdwn = false;
@@ -360,11 +364,6 @@ void moveCharacter()
 					g_block[i].m_cLocation.X--;
 					bSomethingHappened = true;
 				}
-				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-				{
-					g_block[i].m_cLocation.X = 35;
-					g_block[i].m_cLocation.Y = 7;
-				}
 			}
 			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
 			{
@@ -372,7 +371,7 @@ void moveCharacter()
 				slowingdwn = true;
 				g_sChar.m_cLocation.X--;
 			}
-			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			else 
 			{
 				bSomethingHappened = true;
 				slowingdwn = false;
@@ -395,11 +394,6 @@ void moveCharacter()
 					g_block[i].m_cLocation.Y++;
 					bSomethingHappened = true;
 				}
-				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-				{
-					g_block[i].m_cLocation.X = 35;
-					g_block[i].m_cLocation.Y = 7;
-				}
 			}
 			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
 			{
@@ -407,7 +401,7 @@ void moveCharacter()
 				slowingdwn = true;
 				g_sChar.m_cLocation.Y++;
 			}
-			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			else 
 			{
 				bSomethingHappened = true;
 				slowingdwn = false;
@@ -430,11 +424,6 @@ void moveCharacter()
 					g_block[i].m_cLocation.X++;
 					bSomethingHappened = true;
 				}
-				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-				{
-					g_block[i].m_cLocation.X = 35;
-					g_block[i].m_cLocation.Y = 7;
-				}
 			}
 			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
 			{
@@ -442,7 +431,7 @@ void moveCharacter()
 				slowingdwn = true;
 				g_sChar.m_cLocation.X++;
 			}
-			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			else 
 			{
 				bSomethingHappened = true;
 				slowingdwn = false;
