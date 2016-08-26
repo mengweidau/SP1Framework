@@ -8,7 +8,7 @@ extern SGameChar g_block[blockNum];
 const unsigned int plates = 2;
 bool underpressure = false;
 
-extern char maze[77][19];
+extern char maze[77][30];
 
 void pressureplate()
 {

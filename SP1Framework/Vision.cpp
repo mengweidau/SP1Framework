@@ -1,8 +1,9 @@
 #include "Vision.h"
-extern char maze[77][19];
+extern char maze[77][30];
 extern double life;
+WORD charColor1;
 
-void renderVision()
+void renderVision(SGameNPC _NPC[])
 {
 	if (g_eGameState = S_GAME)
 	{
@@ -40,9 +41,21 @@ void renderVision()
 				if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
 					;
 				else
+				{
 					g_Console.writeToBuffer(r, c, maze[r][c]);
+				}
+				for (int i = 0; i < npcNum; i++)
+				{
+					if (!(c == _NPC[i].m_cLocation.Y && r == _NPC[i].m_cLocation.X)) //outside line of sight
+						charColor1 = 0x00;
+					else//inside line of sight
+					{
+						charColor1 = 0x0D;
+						// Draw the location of the Npc
+						g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)2, charColor1);
+					}
+				}	
 			}
-
 		}
 	}
 }

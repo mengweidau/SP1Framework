@@ -77,15 +77,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battery.cpp" />
+    <ClCompile Include="blocks.cpp" />
+    <ClCompile Include="dialogue.cpp" />
+    <ClCompile Include="FairyQuiz.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="Leaderboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Npc.cpp" />
+    <ClCompile Include="NpcMovement.cpp" />
+    <ClCompile Include="pressureplate.cpp" />
+    <ClCompile Include="switches.cpp" />
+    <ClCompile Include="timeDelay.cpp" />
+    <ClCompile Include="Vision.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Battery.h" />
+    <ClInclude Include="blocks.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="Leaderboard.h" />
+    <ClInclude Include="pressureplate.h" />
+    <ClInclude Include="switches.h" />
+    <ClInclude Include="Vision.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
