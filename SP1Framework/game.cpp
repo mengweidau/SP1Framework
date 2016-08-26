@@ -16,7 +16,7 @@
 using namespace std;
 
 char ani[77][19];
-char maze[77][19];
+char maze[77][30];
 EMAPS currentMap = Map1; 
 ESCENES currentScene = SCENE1;
 
@@ -24,16 +24,20 @@ double  g_dElapsedTime;
 double g_dElapsedTimeSec = g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+double waitTime = 0.0;
+double delayFor = 0.0;
+bool canPress = true;
 
 // Game specific variables here
 SGameChar   g_sChar;
 SGameChar	g_block[blockNum];
-//SGameNPC _NPC[npcNum];
+SGameNPC _NPC[npcNum];
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
+
 // Console object
- Console g_Console(77, 25, "SP1 Framework");
+ Console g_Console(77, 30, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -56,7 +60,6 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"Consolas");
-	 //Npc();
 	 beginningcutscene();
  }
 
@@ -101,6 +104,10 @@ void getInput( void )
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 
+	g_abKeyPressed[K_1] = isKeyPressed(VK_1);
+	g_abKeyPressed[K_2] = isKeyPressed(VK_2);
+	g_abKeyPressed[K_3] = isKeyPressed(VK_3);
+	g_abKeyPressed[K_4] = isKeyPressed(VK_4);
 }
 
 //--------------------------------------------------------------
@@ -123,7 +130,8 @@ void update(double dt)
     g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
 	g_dElapsedTimeSec += dt;
-	//timeDelay();
+	timeDelay(_NPC);
+	NpcPatrol(_NPC, g_sChar);
 	Batterylife();
 
     switch (g_eGameState)
@@ -282,7 +290,7 @@ void splashScreenWait4()
 void gameplay()         // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-    moveCharacter();    // moves the character, collision detection, physics, etc
+	moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
 	maps();				// checks for the maps
 	blocks();			// blocks to be continuously updated due to movement
@@ -303,40 +311,35 @@ void moveCharacter()
 
 	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
 	{
-		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] != '|')
+		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || 
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' || 
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
 		{
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] != 'X')
+			for (int i = 0; i < blockNum; i++)
 			{
-				if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] != 'T')
+				if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
+					g_sChar.m_cLocation.Y - 1 == g_block[i].m_cLocation.Y)
 				{
-					for (int i = 0; i < blockNum; i++)
-					{
-						if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
-							g_sChar.m_cLocation.Y - 1 == g_block[i].m_cLocation.Y)
-						{
-							g_block[i].m_cLocation.Y--;
-							bSomethingHappened = true;
-						}
-						if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-						{
-							g_block[i].m_cLocation.X = 35;
-							g_block[i].m_cLocation.Y = 7;
-						}
-					}
-					if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-					{
-						bSomethingHappened = false;
-						slowingdwn = true;
-						g_sChar.m_cLocation.Y--;
-					}
-					else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
-					{
-						bSomethingHappened = true;
-						slowingdwn = false;
-						g_sChar.m_cLocation.Y--;
-					}
-					
+					g_block[i].m_cLocation.Y--;
+					bSomethingHappened = true;
 				}
+				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
+				{
+					g_block[i].m_cLocation.X = 35;
+					g_block[i].m_cLocation.Y = 7;
+				}
+			}
+			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
+			{
+				bSomethingHappened = false;
+				slowingdwn = true;
+				g_sChar.m_cLocation.Y--;
+			}
+			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			{
+				bSomethingHappened = true;
+				slowingdwn = false;
+				g_sChar.m_cLocation.Y--;
 			}
 		}
 	}
@@ -344,127 +347,105 @@ void moveCharacter()
 
 	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
 	{
-		if (maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] != '|')
+		if (!(maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '|' || 
+			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' || 
+			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
 		{
-			if (maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] != 'X')
+			for (int i = 0; i < blockNum; i++)
 			{
-				if (maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] != 'T')
+				if (g_sChar.m_cLocation.X - 1 == g_block[i].m_cLocation.X &&
+					g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
 				{
-					for (int i = 0; i < blockNum; i++)
-					{
-						if (g_sChar.m_cLocation.X - 1 == g_block[i].m_cLocation.X &&
-							g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
-						{
-							g_block[i].m_cLocation.X--;
-							bSomethingHappened = true;
-						}
-						if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-						{
-							g_block[i].m_cLocation.X = 35;
-							g_block[i].m_cLocation.Y = 7;
-						}
-					}
-					if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-					{
-						bSomethingHappened = false;
-						slowingdwn = true;
-						g_sChar.m_cLocation.X--;
-					}
-					else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
-					{
-						bSomethingHappened = true;
-						slowingdwn = false;
-						g_sChar.m_cLocation.X--;
-					}
+					g_block[i].m_cLocation.X--;
+					bSomethingHappened = true;
 				}
+				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
+				{
+					g_block[i].m_cLocation.X = 35;
+					g_block[i].m_cLocation.Y = 7;
+				}
+			}
+			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
+			{
+				bSomethingHappened = false;
+				slowingdwn = true;
+				g_sChar.m_cLocation.X--;
+			}
+			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			{
+				bSomethingHappened = true;
+				slowingdwn = false;
+				g_sChar.m_cLocation.X--;
 			}
 		}
 	}
 
 	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
-		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] != '|')
+		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '|' || 
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' || 
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
 		{
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] != 'X')
+			for (int i = 0; i < blockNum; i++)
 			{
-				if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] != 'T')
+				if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
+					g_sChar.m_cLocation.Y + 1 == g_block[i].m_cLocation.Y)
 				{
-					for (int i = 0; i < blockNum; i++)
-					{
-						if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
-							g_sChar.m_cLocation.Y + 1 == g_block[i].m_cLocation.Y)
-						{
-							g_block[i].m_cLocation.Y++;
-							bSomethingHappened = true;
-						}
-						if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-						{
-							g_block[i].m_cLocation.X = 35;
-							g_block[i].m_cLocation.Y = 7;
-						}
-					}
-					if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-					{
-						bSomethingHappened = false;
-						slowingdwn = true;
-						g_sChar.m_cLocation.Y++;
-					}
-					else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
-					{
-						bSomethingHappened = true;
-						slowingdwn = false;
-						g_sChar.m_cLocation.Y++;
-					}
-					/*if (maze[g_block.m_cLocation.X][g_block.m_cLocation.Y] == '|')
-					{
-						g_block.m_cLocation.X = 35;
-						g_block.m_cLocation.Y = 7;
-					}*/
+					g_block[i].m_cLocation.Y++;
+					bSomethingHappened = true;
 				}
+				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
+				{
+					g_block[i].m_cLocation.X = 35;
+					g_block[i].m_cLocation.Y = 7;
+				}
+			}
+			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
+			{
+				bSomethingHappened = false;
+				slowingdwn = true;
+				g_sChar.m_cLocation.Y++;
+			}
+			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			{
+				bSomethingHappened = true;
+				slowingdwn = false;
+				g_sChar.m_cLocation.Y++;
 			}
 		}
 	}
 
 	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
-		if (maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] != '|')
+		if (!(maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '|' || 
+			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' || 
+			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
 		{
-			if (maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] != 'X')
+			for (int i = 0; i < blockNum; i++)
 			{
-				if (maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] != 'T')
+				if (g_sChar.m_cLocation.X + 1 == g_block[i].m_cLocation.X &&
+					g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
 				{
-					for (int i = 0; i < blockNum; i++)
-					{
-						if (g_sChar.m_cLocation.X + 1 == g_block[i].m_cLocation.X &&
-							g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
-						{
-							g_block[i].m_cLocation.X++;
-							bSomethingHappened = true;
-						}
-						if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-						{
-							g_block[i].m_cLocation.X = 35;
-							g_block[i].m_cLocation.Y = 7;
-						}
-					}
-					if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-					{
-						bSomethingHappened = false;
-						slowingdwn = true;
-						g_sChar.m_cLocation.X++;
-					}
-					else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
-					{
-						bSomethingHappened = true;
-						slowingdwn = false;
-						g_sChar.m_cLocation.X++;
-					}
-					/*if (maze[g_block.m_cLocation.X][g_block.m_cLocation.Y] == '|')
-					{
-						g_block.m_cLocation.X = 35;
-						g_block.m_cLocation.Y = 7;
-					}*/
+					g_block[i].m_cLocation.X++;
+					bSomethingHappened = true;
 				}
+				if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
+				{
+					g_block[i].m_cLocation.X = 35;
+					g_block[i].m_cLocation.Y = 7;
+				}
+			}
+			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
+			{
+				bSomethingHappened = false;
+				slowingdwn = true;
+				g_sChar.m_cLocation.X++;
+			}
+			else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != '.')
+			{
+				bSomethingHappened = true;
+				slowingdwn = false;
+				g_sChar.m_cLocation.X++;
 			}
 		}
 	}
@@ -981,10 +962,10 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-	renderNPC();		//render npc 
-	renderDialogue();	//render dialogue
+	//renderNPC();		//render npc 
+	//renderDialogue();	//render dialogue
 	renderblocks();		//render blocks
-	renderVision(); // Fog Of War
+	renderVision(_NPC); // Fog Of War
 	renderBattery(); // Flashlight battery
 }
 
@@ -1002,8 +983,11 @@ void maps()
 		ifstream file("map1.txt");
 		if (file.is_open())
 		{
+			Npc(_NPC);
+			_NPC[0].tolerance = 0;
+			_NPC[1].tolerance = 0;
 			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-			while (height < 19)
+			while (height < 30)
 			{
 				while (width < 77)
 				{
@@ -1028,7 +1012,14 @@ void maps()
 			ifstream file("map2.txt");
 			if (file.is_open())
 			{
-				while (height < 19)
+				//spawn npc positions
+				Npc(_NPC);
+				//set new position for npc1,2 to avoid collision 
+				_NPC[0].m_cLocation.X = 0;
+				_NPC[0].m_cLocation.Y = 0;
+				_NPC[1].m_cLocation.X = 0;
+				_NPC[1].m_cLocation.Y = 0;
+				while (height < 30)
 				{
 					while (width < 77)
 					{
@@ -1052,6 +1043,11 @@ void maps()
 			ifstream file("map3.txt");
 			if (file.is_open())
 			{
+				//spawn npc positions
+				Npc(_NPC);
+				//set new position for npc3 to avoid collision 
+				_NPC[2].m_cLocation.X = 0;
+				_NPC[2].m_cLocation.Y = 0;
 				while (height < 19)
 				{
 					while (width < 77)
@@ -1075,6 +1071,15 @@ void maps()
 			ifstream file("fairymap.txt");
 			if (file.is_open())
 			{
+				//spawn npc positions
+				Npc(_NPC);
+				//set new position for npc4,5,6 to avoid collision
+				_NPC[3].m_cLocation.X = 0;
+				_NPC[3].m_cLocation.Y = 0;
+				_NPC[4].m_cLocation.X = 0;
+				_NPC[4].m_cLocation.Y = 0;
+				_NPC[5].m_cLocation.X = 0;
+				_NPC[5].m_cLocation.Y = 0;
 				PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 				while (height < 19)
 				{
@@ -1090,7 +1095,6 @@ void maps()
 			}
 		}
 	}
-
 }
 
 void renderMap()
@@ -1127,23 +1131,6 @@ void renderCharacter()
     // Draw the location of the character
     WORD charColor = 0x0F;
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)65, charColor);
-}
-
-void renderNPC()
-{
-	// Draw the location of the Npc
-	/*WORD charColor = 0x0D;
-	for (int i = 0; i < 2; i++)
-	{
-		if (currentMap == Map1)
-		{
-			g_Console.writeToBuffer(_NPC[0].m_cLocation, (char)65, charColor);
-		}
-		else
-		{
-			g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)65, charColor);
-		}
-	}*/
 }
 
 void renderFramerate()

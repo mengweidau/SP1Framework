@@ -2,7 +2,7 @@
 
 extern Console g_Console;
 extern SGameChar g_sChar;
-extern char maze[77][19];
+extern char maze[77][30];
 
 void switches()
 {
