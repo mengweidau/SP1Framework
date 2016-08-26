@@ -52,6 +52,7 @@ enum EKEYS
 //Emumeration for going to different mpas 
 enum EMAPS
 {
+	Map0,
 	Map1,
 	Map2,
 	Map3,
@@ -207,5 +208,8 @@ void pressureplate();//game logic
 void renderplate();//rendering of the presure plate
 void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar);
 void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console);
+void movemaze1();			//movement for maze 1
+void movemaze2();			//movement for maze 2
+void movemaze3();			//movement for maze 3
 
 #endif // _GAME_H

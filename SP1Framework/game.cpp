@@ -15,9 +15,8 @@
 #include "Leaderboard.h"
 using namespace std;
 
-char ani[77][19];
 char maze[77][30];
-EMAPS currentMap = Map1; 
+EMAPS currentMap = Map0; 
 ESCENES currentScene = SCENE1;
 
 double  g_dElapsedTime;
@@ -30,7 +29,7 @@ bool canPress = true;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameChar	g_block[blockNum];
+SGameChar	g_block;
 SGameNPC _NPC[npcNum];
 Fairy _fairy;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
@@ -38,7 +37,7 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 
 
 // Console object
- Console g_Console(77, 30, "SP1 Framework");
+ Console g_Console(77, 25, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -60,7 +59,7 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 	 g_sChar.m_cLocation.Y = 2;
 
 	 // sets the width, height and the font name to use in the console
-	 g_Console.setConsoleFont(0, 16, L"Consolas");
+	 g_Console.setConsoleFont(0, 16, L"");
 	 beginningcutscene();
  }
 
@@ -297,172 +296,21 @@ void gameplay()         // gameplay logic
 	blocks();			// blocks to be continuously updated due to movement
 	switches();			// so it can always update 
 	pressureplate();	// plates updated continuously for the true and false conditions
-
-	for (int i = 0; i < blockNum; i++)
-	{
-		if (maze[g_block[i].m_cLocation.X][g_block[i].m_cLocation.Y] == '|')
-		{
-			g_block[i].m_cLocation.X = 35;
-			g_block[i].m_cLocation.Y = 7;
-		}
-	}
 }
 
 void moveCharacter()
 {
-	bool bSomethingHappened = false;
-	bool slowingdwn = false;
-
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-	// Updating the location of the character based on the key press
-	// providing a beep sound whenever we shift the character
-
-	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+	if (currentMap == Map1)
 	{
-		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' ||  //collision with wall, gate 1, gate 2
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' || 
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
-		{
-			for (int i = 0; i < blockNum; i++) //block pushing 
-			{
-				if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
-					g_sChar.m_cLocation.Y - 1 == g_block[i].m_cLocation.Y)
-				{
-					g_block[i].m_cLocation.Y--;
-					bSomethingHappened = true;
-				}
-			}
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.') //movement slowdown
-			{
-				bSomethingHappened = false;
-				slowingdwn = true;
-				g_sChar.m_cLocation.Y--;
-			}
-			else 
-			{
-				bSomethingHappened = true;
-				slowingdwn = false;
-				g_sChar.m_cLocation.Y--;
-			}
-		}
+		movemaze1();
 	}
-
-
-	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+	else if (currentMap == Map2)
 	{
-		if (!(maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '|' || 
-			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' || 
-			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
-		{
-			for (int i = 0; i < blockNum; i++)
-			{
-				if (g_sChar.m_cLocation.X - 1 == g_block[i].m_cLocation.X &&
-					g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
-				{
-					g_block[i].m_cLocation.X--;
-					bSomethingHappened = true;
-				}
-			}
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-			{
-				bSomethingHappened = false;
-				slowingdwn = true;
-				g_sChar.m_cLocation.X--;
-			}
-			else 
-			{
-				bSomethingHappened = true;
-				slowingdwn = false;
-				g_sChar.m_cLocation.X--;
-			}
-		}
+		movemaze2();
 	}
-
-	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+	else
 	{
-		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '|' || 
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' || 
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
-		{
-			for (int i = 0; i < blockNum; i++)
-			{
-				if (g_sChar.m_cLocation.X == g_block[i].m_cLocation.X &&
-					g_sChar.m_cLocation.Y + 1 == g_block[i].m_cLocation.Y)
-				{
-					g_block[i].m_cLocation.Y++;
-					bSomethingHappened = true;
-				}
-			}
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-			{
-				bSomethingHappened = false;
-				slowingdwn = true;
-				g_sChar.m_cLocation.Y++;
-			}
-			else 
-			{
-				bSomethingHappened = true;
-				slowingdwn = false;
-				g_sChar.m_cLocation.Y++;
-			}
-		}
-	}
-
-	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-	{
-		if (!(maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '|' || 
-			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' || 
-			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
-		{
-			for (int i = 0; i < blockNum; i++)
-			{
-				if (g_sChar.m_cLocation.X + 1 == g_block[i].m_cLocation.X &&
-					g_sChar.m_cLocation.Y == g_block[i].m_cLocation.Y)
-				{
-					g_block[i].m_cLocation.X++;
-					bSomethingHappened = true;
-				}
-			}
-			if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '.')
-			{
-				bSomethingHappened = false;
-				slowingdwn = true;
-				g_sChar.m_cLocation.X++;
-			}
-			else 
-			{
-				bSomethingHappened = true;
-				slowingdwn = false;
-				g_sChar.m_cLocation.X++;
-			}
-		}
-	}
-
-	for (int i = 0; i < npcNum; i++)
-	{
-		if (!(g_sChar.m_cLocation.X > (_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
-			!(g_sChar.m_cLocation.Y > (_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
-		{
-			if (g_abKeyPressed[K_SPACE])
-			{
-				waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
-				bSomethingHappened = true;
-				_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
-				_NPC[i].tolerance++;
-			}
-		}
-	}
-	
-	if (bSomethingHappened)
-	{
-		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.07; // 125ms should be enough
-	}
-	if (slowingdwn)
-	{
-		g_dBounceTime = g_dElapsedTime + 0.325;
+		movemaze3();
 	}
 }
 
@@ -510,13 +358,13 @@ void renderSplashScreen()  // renders the splash screen (title screen)
 	g_Console.writeToBuffer(c, "Start game", 0x74);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Leaderboard", 0x07);
+	g_Console.writeToBuffer(c, "Leaderboard", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Credits", 0x07);
+	g_Console.writeToBuffer(c, "Credits", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 4;
-	g_Console.writeToBuffer(c, "Quit", 0x07);
+	g_Console.writeToBuffer(c, "Quit", 0x47);
 
 	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 15;
@@ -549,16 +397,16 @@ void renderSplashScreen2()  // renders the splash screen (title screen)
 
 	c.Y += 3;
 	c.X = c.X / 2 + 27;
-	g_Console.writeToBuffer(c, "Start game", 0x07);
+	g_Console.writeToBuffer(c, "Start game", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
 	g_Console.writeToBuffer(c, "Leaderboard", 0x74);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Credits", 0x07);
+	g_Console.writeToBuffer(c, "Credits", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 4;
-	g_Console.writeToBuffer(c, "Quit", 0x07);
+	g_Console.writeToBuffer(c, "Quit", 0x47);
 
 	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 15;
@@ -591,16 +439,16 @@ void  renderSplashScreen3()
 
 	c.Y += 3;
 	c.X = c.X / 2 + 27;
-	g_Console.writeToBuffer(c, "Start game", 0x07);
+	g_Console.writeToBuffer(c, "Start game", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Leaderboard", 0x07);
+	g_Console.writeToBuffer(c, "Leaderboard", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
 	g_Console.writeToBuffer(c, "Credits", 0x74);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 4;
-	g_Console.writeToBuffer(c, "Quit", 0x07);
+	g_Console.writeToBuffer(c, "Quit", 0x47);
 
 	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 15;
@@ -633,13 +481,13 @@ void  renderSplashScreen4()
 
 	c.Y += 3;
 	c.X = c.X / 2 + 27;
-	g_Console.writeToBuffer(c, "Start game", 0x07);
+	g_Console.writeToBuffer(c, "Start game", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Leaderboard", 0x07);
+	g_Console.writeToBuffer(c, "Leaderboard", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Credits", 0x07);
+	g_Console.writeToBuffer(c, "Credits", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 4;
 	g_Console.writeToBuffer(c, "Quit", 0x74);
@@ -956,18 +804,15 @@ void maps()
 	int height = 0;
 	int width = 0;
 
-	//start
-	if (g_abKeyPressed[K_ENTER] && currentMap == Map1)
+	//tutorial stage
+	if (g_abKeyPressed[K_ENTER] && currentMap == Map0)
 	{
-		currentMap = Map1;
-		ifstream file("map1.txt");
+		currentMap = Map0;
+		ifstream file("tutorial.txt");
 		if (file.is_open())
 		{
-			Npc(_NPC);
-			_NPC[0].tolerance = 0;
-			_NPC[1].tolerance = 0;
 			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-			while (height < 30)
+			while (height < 19)
 			{
 				while (width < 77)
 				{
@@ -978,6 +823,34 @@ void maps()
 				height++;
 			}
 			file.close();
+		}
+	}
+
+	//start
+	if (currentMap== Map0)
+	{
+		if (g_sChar.m_cLocation.X == 32 && g_sChar.m_cLocation.Y == 2)
+		{
+			currentMap = Map1;
+			ifstream file("map1.txt");
+			if (file.is_open())
+			{
+				Npc(_NPC);
+				_NPC[0].tolerance = 0;
+				_NPC[1].tolerance = 0;
+				PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+				while (height < 30)
+				{
+					while (width < 77)
+					{
+						file >> maze[width][height];
+						width++;
+					}
+					width = 0;
+					height++;
+				}
+				file.close();
+			}
 		}
 	}
 
@@ -1097,9 +970,17 @@ void renderMap()
 				maze[x][y] = '*';
 			}
 			c.X = x;
-			g_Console.writeToBuffer(c, maze[x][y], 0x00);
+			if (currentMap != Map0 || currentMap != Map4)
+			{
+				g_Console.writeToBuffer(c, maze[x][y], 0x00);
+			}
+			else
+			{
+				g_Console.writeToBuffer(c, maze[x][y]);
+			}
 		}
 	}
+
 	c.Y += 1;
 	c.X = 0;
 	g_Console.writeToBuffer(c, "*TALK TO NPCS!!!", 0x74);
@@ -1146,8 +1027,8 @@ void renderDialogue(Fairy *_fairy)
 {
 	//npc dialogue position
 	COORD c = g_Console.getConsoleSize();
-	c.X = 50;
-	c.Y = (c.Y / 2) + 7;
+	c.X = 0;
+	c.Y = (c.Y / 2) + 8;
 	string value;
 
 	//checks each npc's condition
