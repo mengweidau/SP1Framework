@@ -6,6 +6,6 @@
 using namespace std;
 
 
-extern SGameChar g_block[blockNum];
+extern SGameChar g_block;
 void pressureplate();//game logic
 void renderplate();//rendering of the presure plate

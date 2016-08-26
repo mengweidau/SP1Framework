@@ -24,7 +24,7 @@ void Batterylife()
 			timer = g_dElapsedTimeSec; // to reset , so game time wont be faster then timer.
 		}
 	}
-	if (life >= 1 && g_abKeyPressed[K_FLASH])
+	if (life >= 0.9 && g_abKeyPressed[K_FLASH])
 	{
 		if (timer == 0)
 		{

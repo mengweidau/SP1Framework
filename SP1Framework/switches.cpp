@@ -11,6 +11,13 @@ void switches()
 	bool on = false;
 
 	//when character stands on switch
+	if (currentMap == Map0)
+	{
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '/')
+		{
+			on = true;
+		}
+	}
 	if (currentMap == Map1)
 	{
 		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '/')

@@ -1,7 +1,9 @@
 #include "Vision.h"
 extern char maze[77][30];
 extern double life;
+extern SGameChar g_block;
 WORD charColor1;
+WORD charColor2;
 
 void renderVision(SGameNPC _NPC[])
 {
@@ -12,7 +14,7 @@ void renderVision(SGameNPC _NPC[])
 		int right = 5;
 		int up = 3;
 		int down = 3;
-		if (life >= 1)
+		if (life >= 0.9)
 		{
 			if (g_abKeyPressed[K_FLASH])
 			{
@@ -54,74 +56,17 @@ void renderVision(SGameNPC _NPC[])
 						// Draw the location of the Npc
 						g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)2, charColor1);
 					}
-				}	
+				}
+				if (!(c == g_block.m_cLocation.Y && r == g_block.m_cLocation.X)) //outside line of sight
+					charColor2 = 0x00;
+				else//inside line of sight
+				{
+					charColor2 = 0x0D;
+					// Draw the location of the Npc
+					g_Console.writeToBuffer(g_block.m_cLocation, '#' , charColor2);
+				}
+
 			}
 		}
 	}
 }
-
-		/*for (int r = g_sChar.m_cLocation.X + 5; r > g_sChar.m_cLocation.X - 5; r--)
-		{
-			for (int c = g_sChar.m_cLocation.Y + 3; c > g_sChar.m_cLocation.Y - 3; c--)
-			{
-				if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
-					;
-				else
-					g_Console.writeToBuffer(r, c, maze[r][c]);
-			}
-			if (g_abKeyPressed[K_FLASH])
-			{
-				if (g_abKeyPressed[K_LEFT])
-				{
-					for (int r = g_sChar.m_cLocation.X + 5; r > g_sChar.m_cLocation.X - 15; r--)
-					{
-						for (int c = g_sChar.m_cLocation.Y + 3; c > g_sChar.m_cLocation.Y - 3; c--)
-						{
-							if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
-								;
-							else
-								g_Console.writeToBuffer(r, c, maze[r][c]);
-						}
-					}
-				}
-				else if (g_abKeyPressed[K_RIGHT])
-				{
-					for (int r = g_sChar.m_cLocation.X + 15; r > g_sChar.m_cLocation.X - 5; r--)
-					{
-						for (int c = g_sChar.m_cLocation.Y + 3; c > g_sChar.m_cLocation.Y - 3; c--)
-						{
-							if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
-								;
-							else
-								g_Console.writeToBuffer(r, c, maze[r][c]);
-						}
-					}
-				}
-				else if (g_abKeyPressed[K_DOWN])
-				{
-					for (int r = g_sChar.m_cLocation.X + 5; r > g_sChar.m_cLocation.X - 5; r--)
-					{
-						for (int c = g_sChar.m_cLocation.Y + 8; c > g_sChar.m_cLocation.Y - 3; c--)
-						{
-							if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
-								;
-							else
-								g_Console.writeToBuffer(r, c, maze[r][c]);
-						}
-					}
-				}
-				else if (g_abKeyPressed[K_UP])
-				{
-					for (int r = g_sChar.m_cLocation.X + 5; r > g_sChar.m_cLocation.X - 5; r--)
-					{
-						for (int c = g_sChar.m_cLocation.Y + 3; c > g_sChar.m_cLocation.Y - 8; c--)
-						{
-							if (c == g_sChar.m_cLocation.Y && r == g_sChar.m_cLocation.X)
-								;
-							else
-								g_Console.writeToBuffer(r, c, maze[r][c]);
-						}
-					}
-				}
-			}
-		}*/
