@@ -7,4 +7,4 @@ extern  SGameChar g_sChar;
 extern Console g_Console;
 using namespace std;
 
-void renderVision(SGameNPC _NPC[]);
+void renderVision(SGameNPC _NPC[], Blocks _block[]);

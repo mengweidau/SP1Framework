@@ -19,7 +19,7 @@ using namespace std;
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
 const unsigned int npcNum = 6; 
-const unsigned int blockNum = 2;
+const unsigned int blockNum = 3;
 
 extern double  g_dElapsedTime;
 extern double waitTime;
@@ -59,8 +59,8 @@ enum EMAPS
 	Map4,
 	Map5
 };
-
 extern EMAPS currentMap;
+
 //Enumeration for the different animation scenes
 enum ESCENES
 {
@@ -108,6 +108,12 @@ enum EMENU
 struct SGameChar
 {
     COORD m_cLocation;
+
+	bool moveRight = false;
+	bool moveLeft = false;
+	bool moveUp = false;
+	bool moveDown = false;
+	int lastKnownMove;
 };
 
 // struct for npc
@@ -126,6 +132,12 @@ struct SGameNPC
 
 	int moveCount;
 	int dirChoice;
+};
+
+struct Blocks
+{
+	COORD m_location;
+	COORD respawn;
 };
 
 struct Fairy
@@ -162,7 +174,7 @@ void splashScreenWait3();	// render splash screen with hightlighted CREDITS
 void splashScreenWait4();	// render splash screen with hightlighted QUIT
 
 void gameplay();            // gameplay logic
-void moveCharacter();       // moves the character, collision detection, physics, etc
+void moveCharacter(Blocks _block[]);       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 

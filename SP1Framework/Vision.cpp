@@ -5,7 +5,7 @@ extern SGameChar g_block;
 WORD charColor1;
 WORD charColor2;
 
-void renderVision(SGameNPC _NPC[])
+void renderVision(SGameNPC _NPC[], Blocks _block[])
 {
 	if (g_eGameState = S_GAME)
 	{
@@ -57,15 +57,17 @@ void renderVision(SGameNPC _NPC[])
 						g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)2, charColor1);
 					}
 				}
-				if (!(c == g_block.m_cLocation.Y && r == g_block.m_cLocation.X)) //outside line of sight
-					charColor2 = 0x00;
-				else//inside line of sight
+				for (int i = 0; i < blockNum; i++)
 				{
-					charColor2 = 0x0D;
-					// Draw the location of the Npc
-					g_Console.writeToBuffer(g_block.m_cLocation, '#' , charColor2);
+					if (!(c == _block[i].m_location.Y && r == _block[i].m_location.X)) //outside line of sight
+						charColor2 = 0x00;
+					else//inside line of sight
+					{
+						charColor2 = 0x0D;
+						// Draw the location of the Npc
+						g_Console.writeToBuffer(_block[i].m_location, '#', charColor2);
+					}
 				}
-
 			}
 		}
 	}

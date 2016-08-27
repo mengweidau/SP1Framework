@@ -13,6 +13,7 @@
 #include "Battery.h"
 #include "Vision.h"
 #include "Leaderboard.h"
+#include "blocks.h"
 using namespace std;
 
 char maze[77][30];
@@ -29,7 +30,8 @@ bool canPress = true;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameChar	g_block;
+//SGameChar	g_block;
+Blocks _block[blockNum];
 SGameNPC _NPC[npcNum];
 Fairy _fairy;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
@@ -133,6 +135,7 @@ void update(double dt)
 	timeDelay(_NPC);
 	NpcPatrol(_NPC, g_sChar);
 	Batterylife();
+	moveBlocks(_block, g_sChar);
 
     switch (g_eGameState)
     {
@@ -216,12 +219,12 @@ void splashScreenWait()    //for the options on the splashscreen
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN2;
 	}
 }
@@ -233,17 +236,17 @@ void splashScreenWait2()    //for the options on the splashscreen
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTLEA;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN3;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN;
 	}
 }
@@ -255,17 +258,17 @@ void splashScreenWait3()
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTCRE;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN4;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN2;
 	}
 }
@@ -277,12 +280,12 @@ void splashScreenWait4()
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_bQuitGame = true;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN3;
 	}
 }
@@ -290,27 +293,114 @@ void splashScreenWait4()
 void gameplay()         // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacter();    // moves the character, collision detection, physics, etc
+	moveCharacter(_block);    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
 	maps();				// checks for the maps
-	blocks();			// blocks to be continuously updated due to movement
+	respawnBlocks(_block);
 	switches();			// so it can always update 
-	pressureplate();	// plates updated continuously for the true and false conditions
+	pressureplate(_block);	// plates updated continuously for the true and false conditions
 }
 
-void moveCharacter()
+void moveCharacter(Blocks _block[])
 {
-	if (currentMap == Map1)
+	bool bSomethingHappened = false;
+	bool slowingdwn = false;
+
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0) //press up
 	{
-		movemaze1();
+		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || // NO Walls or Gates in the way
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' ||	// '|' are walls, 'X' & 'T' are Gates
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
+		{
+			g_sChar.moveUp = true; // then CAN move
+		}
 	}
-	else if (currentMap == Map2)
+
+	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0) //press left
 	{
-		movemaze2();
+		if (!(maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '|' || // NO Walls or Gates in the way
+			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' ||
+			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'T'))
+		{
+			g_sChar.moveLeft = true; // then CAN move
+		}
 	}
-	else
+
+	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1) //press down
 	{
-		movemaze3();
+		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '|' ||	// NO Walls or Gates in the way
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' ||
+			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
+		{
+			g_sChar.moveDown = true; // then CAN move
+		}
+	}
+
+	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1) //press right
+	{
+		if (!(maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '|' ||	// NO Walls or Gates in the way
+			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' ||
+			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))	
+		{
+			g_sChar.moveRight = true; // then CAN move
+		}
+	}
+
+	for (int i = 0; i < npcNum; i++)
+	{
+		if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
+			!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
+		{
+			if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
+			{
+				waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
+				bSomethingHappened = true;
+				_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
+				_NPC[i].tolerance++;
+			}
+		}
+	}
+	//Charcter struct has new booleans added
+	if (g_sChar.moveUp == true) // When CHARACTER's moveUp == true
+	{
+		g_sChar.m_cLocation.Y--;// Can move up, and something happened = true
+		g_sChar.lastKnownMove = 1;
+		bSomethingHappened = true;
+	}
+	if (g_sChar.moveDown == true) // When CHARACTER's moveDown == true
+	{
+		g_sChar.m_cLocation.Y++;// Can move down, and something happened = true
+		g_sChar.lastKnownMove = 2;
+		bSomethingHappened = true;
+	}
+	if (g_sChar.moveRight == true)// When CHARACTER's moveRight == true
+	{
+		g_sChar.m_cLocation.X++;// Can move right, and something happened = true
+		g_sChar.lastKnownMove = 3;
+		bSomethingHappened = true;
+	}
+	if (g_sChar.moveLeft == true)// When CHARACTER's moveLeft == true
+	{
+		g_sChar.m_cLocation.X--;// Can move left, and something happened = true
+		g_sChar.lastKnownMove = 4;
+		bSomethingHappened = true;
+	}
+
+	if (bSomethingHappened) //if somethingHappened == true
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough      <---- Delay Input
+		g_sChar.moveUp = false;					// Set ALL move bool to false
+		g_sChar.moveRight = false;
+		g_sChar.moveLeft = false;
+		g_sChar.moveDown = false;
+	}
+	if (slowingdwn)
+	{
+		g_dBounceTime = g_dElapsedTime + 0.325;
 	}
 }
 
@@ -639,14 +729,14 @@ void renderSelectmodeLogic()
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_GAME;
 		g_dElapsedTimeSec = 0;
 		g_dBounceTime = 0;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE2;
 	}
 }
@@ -663,12 +753,12 @@ void renderSelectmode2Logic()
 	//}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE3;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE;
 	}
 }
@@ -680,17 +770,17 @@ void renderSelectmode3Logic()
 
 	if (g_abKeyPressed[K_ENTER]) // when ENTER ,QUIT
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_bQuitGame = true; ;
 	}
 	if (g_abKeyPressed[K_SELECTDOWN])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE4;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE2;
 	}
 }
@@ -702,16 +792,15 @@ void renderSelectmode4Logic()
 
 	if (g_abKeyPressed[K_ENTER]) // when enter go to select screen
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN;
 	}
 	if (g_abKeyPressed[K_SELECTUP])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SELECTMODE3;
 	}
 }
-
 
 void renderLeaderboardlogic()
 {
@@ -720,7 +809,7 @@ void renderLeaderboardlogic()
 
 	if (g_abKeyPressed[K_ENTER])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN;
 	}
 }
@@ -782,7 +871,7 @@ void renderCreditsLogic()
 
 	if (g_abKeyPressed[K_ENTER])
 	{
-		setBounceTime(0.3);
+		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN;
 	}
 }
@@ -792,8 +881,8 @@ void renderGame()
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
 	renderDialogue(&_fairy);	//render dialogue
-	renderblocks();		//render blocks
-	renderVision(_NPC); // Fog Of War
+	//renderblocks();		//render blocks
+	renderVision(_NPC, _block); // Fog Of War
 	renderBattery(); // Flashlight battery
 }
 
@@ -807,10 +896,11 @@ void maps()
 	//tutorial stage
 	if (g_abKeyPressed[K_ENTER] && currentMap == Map0)
 	{
-		currentMap = Map0;
+		currentMap = Map0; //Map0, tutorial.txt
 		ifstream file("tutorial.txt");
 		if (file.is_open())
 		{
+			blocks(_block);
 			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 			while (height < 19)
 			{

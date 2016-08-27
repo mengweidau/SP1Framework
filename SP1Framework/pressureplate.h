@@ -5,7 +5,5 @@
 
 using namespace std;
 
-
-extern SGameChar g_block;
-void pressureplate();//game logic
+void pressureplate(Blocks _block[]);//game logic
 void renderplate();//rendering of the presure plate

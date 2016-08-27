@@ -3,30 +3,33 @@
 
 extern Console g_Console;
 extern SGameChar g_sChar;
-extern SGameChar g_block;
 
 const unsigned int plates = 2;
 bool underpressure = false;
 
 extern char maze[77][30];
 
-void pressureplate()
+void pressureplate(Blocks _block[])
 {
 	COORD c = g_Console.getConsoleSize();
+	for (int i = 0; i < blockNum; i++)
+	{
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 'P')
+		{
+			underpressure = true;
+		}
+		else if (maze[_block[i].m_location.X][_block[i].m_location.Y] == 'P')
+		{
+			underpressure = true;
+		}
+		else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'P' &&
+			maze[_block[i].m_location.X][_block[i].m_location.Y] != 'P')
+		{
+			underpressure = false;
+		}
+	}
 
-	if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 'P')
-	{
-		underpressure = true;
-	}
-	else if (maze[g_block.m_cLocation.X][g_block.m_cLocation.Y] == 'P')
-	{
-		underpressure = true;
-	}
-	else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'P' &&
-		maze[g_block.m_cLocation.X][g_block.m_cLocation.Y] != 'P')
-	{
-		underpressure = false;
-	}
+	
 	
 	//when true
 	if (underpressure)
@@ -38,7 +41,7 @@ void pressureplate()
 			{
 				if (maze[x][y] == 'T')
 				{
-					maze[x][y] = (char)0;
+					maze[x][y] = ' ';
 				}
 				//else if (maze[x][y] == 'T' && !(underpressure))
 				//{
