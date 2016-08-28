@@ -27,6 +27,8 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool canPress = true;
+bool newMap = true;
+int currentlevel = 0;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -132,10 +134,6 @@ void update(double dt)
     g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
 	g_dElapsedTimeSec += dt;
-	timeDelay(_NPC);
-	NpcPatrol(_NPC, g_sChar);
-	Batterylife();
-	moveBlocks(_block, g_sChar);
 
     switch (g_eGameState)
     {
@@ -164,6 +162,12 @@ void update(double dt)
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
     }
+
+	if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '*')
+	{
+		currentlevel++;
+		newMap = true;
+	}
 }
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
@@ -294,8 +298,9 @@ void gameplay()         // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter(_block);    // moves the character, collision detection, physics, etc
-                        // sound can be played here too.
-	maps();				// checks for the maps
+	timeDelay(_NPC);
+	Batterylife();
+	moveBlocks(_block, g_sChar);
 	respawnBlocks(_block);
 	switches();			// so it can always update 
 	pressureplate(_block);	// plates updated continuously for the true and false conditions
@@ -878,171 +883,216 @@ void renderCreditsLogic()
 
 void renderGame()
 {
-    renderMap();        // renders the map to the buffer first
+    renderMap(currentlevel);        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
 	renderDialogue(&_fairy);	//render dialogue
-	//renderblocks();		//render blocks
 	renderVision(_NPC, _block); // Fog Of War
 	renderBattery(); // Flashlight battery
 }
 
-void maps()
+void maps(int level)
 {
 	COORD c = g_Console.getConsoleSize();
-
 	int height = 0;
 	int width = 0;
 
-	//tutorial stage
-	if (g_abKeyPressed[K_ENTER] && currentMap == Map0)
+	string mapname = " ";
+
+	switch (level)
 	{
-		currentMap = Map0; //Map0, tutorial.txt
-		ifstream file("tutorial.txt");
-		if (file.is_open())
-		{
-			blocks(_block);
-			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-			while (height < 19)
-			{
-				while (width < 77)
-				{
-					file >> maze[width][height];
-					width++;
-				}
-				width = 0;
-				height++;
-			}
-			file.close();
-		}
+	case 0:
+		mapname = "tutorial.txt";
+		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		break;
+	case 1:
+		mapname = "map1.txt";
+		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		break;
+	case 2:
+		mapname = "map2.txt";
+		break;
+	case 3:
+		mapname = "map3.txt";
+		break;
+	case 4:
+		mapname = "fairymap.txt";
+		break;
 	}
 
-	//start
-	if (currentMap== Map0)
+	ifstream file(mapname);
+	if (file.is_open())
 	{
-		if (g_sChar.m_cLocation.X == 32 && g_sChar.m_cLocation.Y == 2)
+		blocks(_block);
+		Npc(_NPC);
+		while (height < 30)
 		{
-			currentMap = Map1;
-			ifstream file("map1.txt");
-			if (file.is_open())
+			while (width < 77)
 			{
-				Npc(_NPC);
-				_NPC[0].tolerance = 0;
-				_NPC[1].tolerance = 0;
-				PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-				while (height < 30)
-				{
-					while (width < 77)
-					{
-						file >> maze[width][height];
-						width++;
-					}
-					width = 0;
-					height++;
-				}
-				file.close();
+				file >> maze[width][height];
+				width++;
 			}
+			width = 0;
+			height++;
 		}
+		file.close();
 	}
 
-	//goto the maps
+	////tutorial stage
+	//if (g_abKeyPressed[K_ENTER] && currentMap == Map0)
+	//{
+	//	currentMap = Map0; //Map0, tutorial.txt
+	//	ifstream file("tutorial.txt");
+	//	if (file.is_open())
+	//	{
+	//		blocks(_block);
+	//		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	//		while (height < 19)
+	//		{
+	//			while (width < 77)
+	//			{
+	//				file >> maze[width][height];
+	//				width++;
+	//			}
+	//			width = 0;
+	//			height++;
+	//		}
+	//		file.close();
+	//	}
+	//}
 
-	if (currentMap == Map1)
-	{
-		//towards
-		if (g_sChar.m_cLocation.X == 75 && g_sChar.m_cLocation.Y == 9)
-		{
-			currentMap = Map2;
-			ifstream file("map2.txt");
-			if (file.is_open())
-			{
-				//spawn npc positions
-				Npc(_NPC);
-				//set new position for npc1,2 to avoid collision 
-				_NPC[0].m_cLocation.X = 0;
-				_NPC[0].m_cLocation.Y = 0;
-				_NPC[1].m_cLocation.X = 0;
-				_NPC[1].m_cLocation.Y = 0;
-				while (height < 30)
-				{
-					while (width < 77)
-					{
-						file >> maze[width][height];
-						width++;
-					}
-					width = 0;
-					height++;
-				}
-				file.close();
-			}
-		}
-	}
+	////start
+	//if (currentMap== Map0)
+	//{
+	//	if (g_sChar.m_cLocation.X == 32 && g_sChar.m_cLocation.Y == 2)
+	//	{
+	//		currentMap = Map1;
+	//		ifstream file("map1.txt");
+	//		if (file.is_open())
+	//		{	//This is still counted as Map0
+	//			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	//			while (height < 30)
+	//			{
+	//				while (width < 77)
+	//				{
+	//					file >> maze[width][height];
+	//					width++;
+	//				}
+	//				width = 0;
+	//				height++;
+	//			}
+	//			file.close();
+	//		}
+	//	}
+	//}
 
-	if (currentMap == Map2)
-	{
-		//towards
-		if (g_sChar.m_cLocation.X == 1 && g_sChar.m_cLocation.Y == 4)
-		{
-			currentMap = Map3;
-			ifstream file("map3.txt");
-			if (file.is_open())
-			{
-				//spawn npc positions
-				Npc(_NPC);
-				//set new position for npc3 to avoid collision 
-				_NPC[2].m_cLocation.X = 0;
-				_NPC[2].m_cLocation.Y = 0;
-				while (height < 19)
-				{
-					while (width < 77)
-					{
-						file >> maze[width][height];
-						width++;
-					}
-					width = 0;
-					height++;
-				}
-				file.close();
-			}
-		}
-	}
+	////goto the maps
 
-	if (currentMap == Map3)
-	{
-		if (g_sChar.m_cLocation.X == 3 && g_sChar.m_cLocation.Y == 9)
-		{
-			currentMap = Map4;
-			ifstream file("fairymap.txt");
-			if (file.is_open())
-			{
-				//spawn npc positions
-				Npc(_NPC);
-				//set new position for npc4,5,6 to avoid collision
-				_NPC[3].m_cLocation.X = 0;
-				_NPC[3].m_cLocation.Y = 0;
-				_NPC[4].m_cLocation.X = 0;
-				_NPC[4].m_cLocation.Y = 0;
-				_NPC[5].m_cLocation.X = 0;
-				_NPC[5].m_cLocation.Y = 0;
-				PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-				while (height < 19)
-				{
-					while (width < 77)
-					{
-						file >> maze[width][height];
-						width++;
-					}
-					width = 0;
-					height++;
-				}
-				file.close();
-			}
-		}
-	}
+	//if (currentMap == Map1)
+	//{
+	//	Npc(_NPC);
+	//	_NPC[0].tolerance = 0;
+	//	_NPC[1].tolerance = 0;
+	//	//towards
+	//	if (g_sChar.m_cLocation.X == 75 && g_sChar.m_cLocation.Y == 9)
+	//	{
+	//		currentMap = Map2;
+	//		ifstream file("map2.txt");
+	//		if (file.is_open())
+	//		{
+	//			//spawn npc positions
+	//			Npc(_NPC);
+	//			//set new position for npc1,2 to avoid collision 
+	//			_NPC[0].m_cLocation.X = 0;
+	//			_NPC[0].m_cLocation.Y = 0;
+	//			_NPC[1].m_cLocation.X = 0;
+	//			_NPC[1].m_cLocation.Y = 0;
+	//			while (height < 30)
+	//			{
+	//				while (width < 77)
+	//				{
+	//					file >> maze[width][height];
+	//					width++;
+	//				}
+	//				width = 0;
+	//				height++;
+	//			}
+	//			file.close();
+	//		}
+	//	}
+	//}
+
+	//if (currentMap == Map2)
+	//{
+	//	//towards
+	//	if (g_sChar.m_cLocation.X == 1 && g_sChar.m_cLocation.Y == 4)
+	//	{
+	//		currentMap = Map3;
+	//		ifstream file("map3.txt");
+	//		if (file.is_open())
+	//		{
+	//			//spawn npc positions
+	//			Npc(_NPC);
+	//			//set new position for npc3 to avoid collision 
+	//			_NPC[2].m_cLocation.X = 0;
+	//			_NPC[2].m_cLocation.Y = 0;
+	//			while (height < 19)
+	//			{
+	//				while (width < 77)
+	//				{
+	//					file >> maze[width][height];
+	//					width++;
+	//				}
+	//				width = 0;
+	//				height++;
+	//			}
+	//			file.close();
+	//		}
+	//	}
+	//}
+
+	//if (currentMap == Map3)
+	//{
+	//	if (g_sChar.m_cLocation.X == 3 && g_sChar.m_cLocation.Y == 9)
+	//	{
+	//		currentMap = Map4;
+	//		ifstream file("fairymap.txt");
+	//		if (file.is_open())
+	//		{
+	//			//spawn npc positions
+	//			Npc(_NPC);
+	//			//set new position for npc4,5,6 to avoid collision
+	//			_NPC[3].m_cLocation.X = 0;
+	//			_NPC[3].m_cLocation.Y = 0;
+	//			_NPC[4].m_cLocation.X = 0;
+	//			_NPC[4].m_cLocation.Y = 0;
+	//			_NPC[5].m_cLocation.X = 0;
+	//			_NPC[5].m_cLocation.Y = 0;
+	//			PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	//			while (height < 19)
+	//			{
+	//				while (width < 77)
+	//				{
+	//					file >> maze[width][height];
+	//					width++;
+	//				}
+	//				width = 0;
+	//				height++;
+	//			}
+	//			file.close();
+	//		}
+	//	}
+	//}
 }
 
-void renderMap()
+void renderMap(int level)
 {
 	COORD c = g_Console.getConsoleSize();
+
+	if (newMap)
+	{
+		newMap = false;
+		maps(level);
+	}
 
 	for (int y = 0; y < 19; y++)
 	{

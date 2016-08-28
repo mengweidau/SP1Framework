@@ -6,4 +6,3 @@
 using namespace std;
 
 void pressureplate(Blocks _block[]);//game logic
-void renderplate();//rendering of the presure plate

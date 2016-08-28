@@ -4,33 +4,21 @@
 extern Console g_Console;
 extern SGameChar g_sChar;
 
-const unsigned int plates = 2;
+const unsigned int plates = 2; // what is this for ?
 bool underpressure = false;
-
-extern char maze[77][30];
 
 void pressureplate(Blocks _block[])
 {
 	COORD c = g_Console.getConsoleSize();
 	for (int i = 0; i < blockNum; i++)
 	{
-		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 'P')
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 'P' ||
+			maze[_block[i].m_location.X][_block[i].m_location.Y] == 'P')
 		{
 			underpressure = true;
-		}
-		else if (maze[_block[i].m_location.X][_block[i].m_location.Y] == 'P')
-		{
-			underpressure = true;
-		}
-		else if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'P' &&
-			maze[_block[i].m_location.X][_block[i].m_location.Y] != 'P')
-		{
-			underpressure = false;
 		}
 	}
 
-	
-	
 	//when true
 	if (underpressure)
 	{
@@ -41,7 +29,7 @@ void pressureplate(Blocks _block[])
 			{
 				if (maze[x][y] == 'T')
 				{
-					maze[x][y] = ' ';
+					maze[x][y] = (char)0;
 				}
 				//else if (maze[x][y] == 'T' && !(underpressure))
 				//{
@@ -66,5 +54,5 @@ void pressureplate(Blocks _block[])
 			}
 		}
 	}
-	
+
 }

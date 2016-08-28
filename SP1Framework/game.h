@@ -24,6 +24,7 @@ const unsigned int blockNum = 3;
 extern double  g_dElapsedTime;
 extern double waitTime;
 extern char maze[77][30];
+extern int currentlevel;
 
 // Enumeration to store the control keys that your game will have
 enum EKEYS
@@ -200,8 +201,8 @@ void renderLeaderboard();	//render the leaderbroad
 void renderLeaderboardlogic(); // update the leaderbroad
 
 void renderGame();          // renders the game stuff
-void renderMap();           // renders the map to the buffer first
-void maps();				//maps to be put into renderMap and renderGame
+void renderMap(int level);           // renders the map to the buffer first
+void maps(int level);				//maps to be put into renderMap and renderGame
 
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
