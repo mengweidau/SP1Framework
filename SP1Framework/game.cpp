@@ -17,7 +17,6 @@
 using namespace std;
 
 char maze[77][30];
-EMAPS currentMap = Map0; 
 ESCENES currentScene = SCENE1;
 
 double  g_dElapsedTime;
@@ -32,7 +31,6 @@ int currentlevel = 0;
 
 // Game specific variables here
 SGameChar   g_sChar;
-//SGameChar	g_block;
 Blocks _block[blockNum];
 SGameNPC _NPC[npcNum];
 Fairy _fairy;
@@ -1110,7 +1108,7 @@ void renderMap(int level)
 				maze[x][y] = '*';
 			}
 			c.X = x;
-			if (currentMap != Map0 || currentMap != Map4)
+			if (currentlevel != 0 || currentlevel != 4)
 			{
 				g_Console.writeToBuffer(c, maze[x][y], 0x00);
 			}

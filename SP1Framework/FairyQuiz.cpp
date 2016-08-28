@@ -53,7 +53,7 @@ void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console)
 	}
 
 	//if player is more than fairy position.x, fairy trigger = true
-	if (currentMap == Map4)
+	if (currentlevel == 4)
 	{
 		(*_fairy).fairyPos = (*g_Console).getConsoleSize();
 		(*_fairy).fairyPos.X = (*_fairy).fairyPos.X / 2;  //fairy trigger coord = consoleSize.x / 2 

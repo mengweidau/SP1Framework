@@ -50,18 +50,6 @@ enum EKEYS
 	K_COUNT,
 };
 
-//Emumeration for going to different mpas 
-enum EMAPS
-{
-	Map0,
-	Map1,
-	Map2,
-	Map3,
-	Map4,
-	Map5
-};
-extern EMAPS currentMap;
-
 //Enumeration for the different animation scenes
 enum ESCENES
 {
