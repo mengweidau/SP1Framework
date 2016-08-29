@@ -140,6 +140,9 @@ struct Fairy
 	int currentQuestionNum = 0;
 
 	bool fairyTrigger = false;
+	bool wrongAns = false;
+	int playerInput = 0;
+	bool canPress = true;
 };
 
 // struct for the switches
@@ -212,5 +215,6 @@ void pressureplate();//game logic
 void renderplate();//rendering of the presure plate
 void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar);
 void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console);
+void FairyQuiz(Fairy *_fairy, Console *g_Console);
 
 #endif // _GAME_H

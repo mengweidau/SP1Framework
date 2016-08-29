@@ -25,9 +25,9 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
-bool canPress = true;
-bool newMap = true;
+bool loadMap = true;
 int currentlevel = 4;
+bool canPress = true;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -133,7 +133,6 @@ void update(double dt)
 	g_dDeltaTime = dt;
 	g_dElapsedTimeSec += dt;
 	FairyQuestion(&_fairy, &g_sChar, &g_Console);
-
     switch (g_eGameState)
     {
 		case S_BEGIN: beginningcutscene();//to show cutscene
@@ -165,7 +164,7 @@ void update(double dt)
 	if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '*')
 	{
 		currentlevel++;
-		newMap = true;
+		loadMap = true;
 	}
 }
 //--------------------------------------------------------------
@@ -927,6 +926,7 @@ void renderGame()
 	renderVision(_NPC, _block); // Fog Of War
 	renderBattery(); // Flashlight battery
 	renderDialogue(&_fairy);	//render dialogues
+	//FairyQuiz(&_fairy, &g_Console);
 }
 
 void maps(int level)
@@ -941,20 +941,29 @@ void maps(int level)
 	{
 	case 0:
 		mapname = "tutorial.txt";
+		
 		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
 		mapname = "map1.txt";
+		g_sChar.m_cLocation.X = 32;
+		g_sChar.m_cLocation.Y = 2;
 		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 2:
 		mapname = "map2.txt";
+		g_sChar.m_cLocation.X = 75;
+		g_sChar.m_cLocation.Y = 9;
 		break;
 	case 3:
 		mapname = "map3.txt";
+		g_sChar.m_cLocation.X = 1;
+		g_sChar.m_cLocation.Y = 4;
 		break;
 	case 4:
 		mapname = "fairymap.txt";
+		g_sChar.m_cLocation.X = 3;
+		g_sChar.m_cLocation.Y = 9;
 		break;
 	}
 
@@ -975,161 +984,15 @@ void maps(int level)
 		}
 		file.close();
 	}
-
-	////tutorial stage
-	//if (g_abKeyPressed[K_ENTER] && currentMap == Map0)
-	//{
-	//	currentMap = Map0; //Map0, tutorial.txt
-	//	ifstream file("tutorial.txt");
-	//	if (file.is_open())
-	//	{
-	//		blocks(_block);
-	//		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> maze[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	////start
-	//if (currentMap== Map0)
-	//{
-	//	if (g_sChar.m_cLocation.X == 32 && g_sChar.m_cLocation.Y == 2)
-	//	{
-	//		currentMap = Map1;
-	//		ifstream file("map1.txt");
-	//		if (file.is_open())
-	//		{	//This is still counted as Map0
-	//			PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	//			while (height < 30)
-	//			{
-	//				while (width < 77)
-	//				{
-	//					file >> maze[width][height];
-	//					width++;
-	//				}
-	//				width = 0;
-	//				height++;
-	//			}
-	//			file.close();
-	//		}
-	//	}
-	//}
-
-	////goto the maps
-
-	//if (currentMap == Map1)
-	//{
-	//	Npc(_NPC);
-	//	_NPC[0].tolerance = 0;
-	//	_NPC[1].tolerance = 0;
-	//	//towards
-	//	if (g_sChar.m_cLocation.X == 75 && g_sChar.m_cLocation.Y == 9)
-	//	{
-	//		currentMap = Map2;
-	//		ifstream file("map2.txt");
-	//		if (file.is_open())
-	//		{
-	//			//spawn npc positions
-	//			Npc(_NPC);
-	//			//set new position for npc1,2 to avoid collision 
-	//			_NPC[0].m_cLocation.X = 0;
-	//			_NPC[0].m_cLocation.Y = 0;
-	//			_NPC[1].m_cLocation.X = 0;
-	//			_NPC[1].m_cLocation.Y = 0;
-	//			while (height < 30)
-	//			{
-	//				while (width < 77)
-	//				{
-	//					file >> maze[width][height];
-	//					width++;
-	//				}
-	//				width = 0;
-	//				height++;
-	//			}
-	//			file.close();
-	//		}
-	//	}
-	//}
-
-	//if (currentMap == Map2)
-	//{
-	//	//towards
-	//	if (g_sChar.m_cLocation.X == 1 && g_sChar.m_cLocation.Y == 4)
-	//	{
-	//		currentMap = Map3;
-	//		ifstream file("map3.txt");
-	//		if (file.is_open())
-	//		{
-	//			//spawn npc positions
-	//			Npc(_NPC);
-	//			//set new position for npc3 to avoid collision 
-	//			_NPC[2].m_cLocation.X = 0;
-	//			_NPC[2].m_cLocation.Y = 0;
-	//			while (height < 19)
-	//			{
-	//				while (width < 77)
-	//				{
-	//					file >> maze[width][height];
-	//					width++;
-	//				}
-	//				width = 0;
-	//				height++;
-	//			}
-	//			file.close();
-	//		}
-	//	}
-	//}
-
-	//if (currentMap == Map3)
-	//{
-	//	if (g_sChar.m_cLocation.X == 3 && g_sChar.m_cLocation.Y == 9)
-	//	{
-	//		currentMap = Map4;
-	//		ifstream file("fairymap.txt");
-	//		if (file.is_open())
-	//		{
-	//			//spawn npc positions
-	//			Npc(_NPC);
-	//			//set new position for npc4,5,6 to avoid collision
-	//			_NPC[3].m_cLocation.X = 0;
-	//			_NPC[3].m_cLocation.Y = 0;
-	//			_NPC[4].m_cLocation.X = 0;
-	//			_NPC[4].m_cLocation.Y = 0;
-	//			_NPC[5].m_cLocation.X = 0;
-	//			_NPC[5].m_cLocation.Y = 0;
-	//			PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	//			while (height < 19)
-	//			{
-	//				while (width < 77)
-	//				{
-	//					file >> maze[width][height];
-	//					width++;
-	//				}
-	//				width = 0;
-	//				height++;
-	//			}
-	//			file.close();
-	//		}
-	//	}
-	//}
 }
 
 void renderMap(int level)
 {
 	COORD c = g_Console.getConsoleSize();
 
-	if (newMap)
+	if (loadMap)
 	{
-		newMap = false;
+		loadMap = false;
 		maps(level);
 	}
 
@@ -1219,15 +1082,10 @@ void renderDialogue(Fairy *_fairy)
 			g_Console.writeToBuffer(c, value);
 		}
 	}
-	int height = 0;
-	int width = 0;
 	int playerInput = 0;
 
 	if ((*_fairy).fairyTrigger == true)
 	{
-		c.X = (c.X / 2) - 5;
-		c.Y = 20;
-
 		if (g_abKeyPressed[K_1] && canPress == true)
 		{
 			playerInput = 1;
@@ -1254,131 +1112,129 @@ void renderDialogue(Fairy *_fairy)
 			canPress = true;
 		}
 
-		//Put into an external function as well
-		switch ((*_fairy).currentQuestionNum) //add bool for reset to map1, and set requirements REMEMBER
-		{
-		case 0://QUESTION 1
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question
-			for (int i = 0; i < 4; i++)//draw answers 
+			switch ((*_fairy).currentQuestionNum) //add bool for reset to map1, and set requirements REMEMBER
 			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check player input
-			{
-			case 1://correct ans
-				(*_fairy).currentQuestionNum++;
+			case 0://QUESTION 1
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check player input
+				{
+				case 1://correct ans
+					(*_fairy).currentQuestionNum++;
+					break;
+				case 2: //wrong ans
+				case 3:
+				case 4:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 2: //if wrong ans MUST create new layer of map 1, cannot swap currentMap
-			case 3:
-			case 4:
-				/*(*_fairy).fairyTrigger = false;
-				(*_fairy).currentQuestionNum = 0;
-
-				currentMap = Map1;
-				_NPC[0].tolerance = 0;
-				_NPC[1].tolerance = 0;
-				g_sChar.m_cLocation.X = 25;
-				g_sChar.m_cLocation.Y = 2;*/
-
-				//bool = true, add if condition below for bool true to set currentlevel = 1;
-			}
-			break;
-		case 1://QUESTION 2
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]); //draw question 2
-			for (int i = 0; i < 4; i++)//draw answers 
-			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check input
-			{
-			case 4: //correct ans
-				(*_fairy).currentQuestionNum++;
+			case 1://QUESTION 2
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]); //draw question 2
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check input
+				{
+				case 4: //correct ans
+					(*_fairy).currentQuestionNum++;
+					break;
+				case 1://wrong ans
+				case 2:
+				case 3:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 1://wrong ans
-			case 2:
-			case 3:
-				//fail transition
-			}
-			break;
-		case 2://QUESTION 3
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);// draw question 3
-			for (int i = 0; i < 4; i++)//draw answers 
-			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check input
-			{
-			case 4://correct ans
-				(*_fairy).currentQuestionNum++;
+			case 2://QUESTION 3
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);// draw question 3
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check input
+				{
+				case 4://correct ans
+					(*_fairy).currentQuestionNum++;
+					break;
+				case 1://wrong ans
+				case 2:
+				case 3:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 1://wrong ans
-			case 2:
-			case 3:
-				//fail transition
-			}
-			break;
-		case 3: //QUESTION 4
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 4
-			for (int i = 0; i < 4; i++)//draw answers 
-			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check input
-			{
-			case 1://correct ans
-				(*_fairy).currentQuestionNum++;
+			case 3: //QUESTION 4
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 4
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check input
+				{
+				case 1://correct ans
+					(*_fairy).currentQuestionNum++;
+					break;
+				case 2://wrong ans
+				case 3:
+				case 4:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 2://wrong ans
-			case 3:
-			case 4:
-				//fail transition
-			}
-			break;
-		case 4:// QUESTION 5
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 5
-			for (int i = 0; i < 4; i++)//draw answers 
-			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check input
-			{
-			case 1://correct ans
-				(*_fairy).currentQuestionNum++;
+			case 4:// QUESTION 5
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 5
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check input
+				{
+				case 1://correct ans
+					(*_fairy).currentQuestionNum++;
+					break;
+				case 2://wrong ans
+				case 3:
+				case 4:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 2://wrong ans
-			case 3:
-			case 4:
-				//fail transition
-			}
-			break;
-		case 5://QUESTION 6
-			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 6
-			for (int i = 0; i < 4; i++)//draw answers 
-			{
-				c.Y++;
-				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-			}
-			switch (playerInput)//check input
-			{
-			case 1://correct ans
-				//inset something that tells you finished the game
+			case 5://QUESTION 6
+				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 6
+				for (int i = 0; i < 4; i++)//draw answers 
+				{
+					c.Y++;
+					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+				}
+				switch (playerInput)//check input
+				{
+				case 1://correct ans
+					   //inset something that tells you finished the game
+					break;
+				case 2://wrong ans
+				case 3:
+				case 4:
+					(*_fairy).wrongAns = true;
+				}
 				break;
-			case 2://wrong ans
-			case 3:
-			case 4:
-				(*_fairy).fairyTrigger = false;
-				(*_fairy).currentQuestionNum = 0;
-
-				currentlevel = 1;
 			}
-			break;
 		}
-	}
+		if ((*_fairy).wrongAns == true)
+		{
+			currentlevel = 1;
+			loadMap = true;
+			(*_fairy).fairyTrigger = false;
+			(*_fairy).wrongAns = false;
+			for (int i = 0; i < npcNum; i++)
+			{
+				_NPC[i].tolerance = 0;
+			}
+		}
 }
 
 void beginningcutscene() //beginning cutscence 
