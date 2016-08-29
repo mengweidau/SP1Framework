@@ -8,21 +8,28 @@ void blocks(Blocks _block[])
 		switch (i)
 		{
 		case 0:
-			if (currentlevel == 0) //need to swap back to map1
+			if (currentlevel == 0) //tutorial
 			{
-				_block[i].m_location.X = 44; //35, 7
+				_block[i].m_location.X = 44;
 				_block[i].m_location.Y = 2;
 			}
 			break;
 		case 1:
-			if (currentlevel == 1) //need to swap back to map2
+			if (currentlevel == 1) //map1
 			{
-				_block[i].m_location.X = 46; //31, 14
-				_block[i].m_location.Y = 2;
+				_block[i].m_location.X = 35; 
+				_block[i].m_location.Y = 7;
 			}
 			break;
 		case 2:
-			if (currentlevel == 2)
+			if (currentlevel == 2) //map2
+			{
+				_block[i].m_location.X = 31;
+				_block[i].m_location.Y = 14;
+			}
+			break;
+		case 3:
+			if (currentlevel == 3) //map3
 			{
 				_block[i].m_location.X = 74;
 				_block[i].m_location.Y = 10;

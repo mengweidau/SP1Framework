@@ -65,7 +65,21 @@ void renderVision(SGameNPC _NPC[], Blocks _block[])
 					{
 						charColor2 = 0x0D;
 						// Draw the location of the Npc
-						g_Console.writeToBuffer(_block[i].m_location, '#', charColor2);
+						switch (currentlevel)
+						{
+						case 0://tutorial level
+							g_Console.writeToBuffer(_block[0].m_location, '#', charColor2);
+							break;
+						case 1:
+							g_Console.writeToBuffer(_block[1].m_location, '#', charColor2);
+							break;
+						case 2:
+							g_Console.writeToBuffer(_block[2].m_location, '#', charColor2);
+							break;
+						case 3: 
+							g_Console.writeToBuffer(_block[3].m_location, '#', charColor2);
+							break;
+						}
 					}
 				}
 			}

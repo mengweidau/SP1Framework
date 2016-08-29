@@ -300,6 +300,7 @@ void gameplay()         // gameplay logic
 	Batterylife();
 	moveBlocks(_block, g_sChar);
 	respawnBlocks(_block);
+	NpcPatrol(_NPC, g_sChar);
 	switches();			// so it can always update 
 	pressureplate(_block);	// plates updated continuously for the true and false conditions
 }
@@ -883,9 +884,9 @@ void renderGame()
 {
     renderMap(currentlevel);        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-	renderDialogue(&_fairy);	//render dialogue
 	renderVision(_NPC, _block); // Fog Of War
 	renderBattery(); // Flashlight battery
+	renderDialogue(&_fairy);	//render dialogues
 }
 
 void maps(int level)

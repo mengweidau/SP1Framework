@@ -114,12 +114,14 @@ struct SGameNPC
 	string str2;
 	bool talked;
 
-	bool left;
 	bool right;
+	bool left;
 	bool up;
 	bool down;
 
-	int moveCount;
+	bool somethingHappened;
+	double movedelay;
+	int moveCount = 3;
 	int dirChoice;
 };
 
@@ -209,8 +211,5 @@ void pressureplate();//game logic
 void renderplate();//rendering of the presure plate
 void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar);
 void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console);
-void movemaze1();			//movement for maze 1
-void movemaze2();			//movement for maze 2
-void movemaze3();			//movement for maze 3
 
 #endif // _GAME_H
