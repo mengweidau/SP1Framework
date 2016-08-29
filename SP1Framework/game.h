@@ -123,6 +123,7 @@ struct SGameNPC
 	double movedelay;
 	int moveCount = 3;
 	int dirChoice;
+	bool inTalkingRange = false;
 };
 
 struct Blocks
@@ -165,7 +166,7 @@ void splashScreenWait3();	// render splash screen with hightlighted CREDITS
 void splashScreenWait4();	// render splash screen with hightlighted QUIT
 
 void gameplay();            // gameplay logic
-void moveCharacter(Blocks _block[]);       // moves the character, collision detection, physics, etc
+void moveCharacter(Blocks _block[], Fairy *_fairy);       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 

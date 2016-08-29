@@ -27,7 +27,7 @@ double waitTime = 0.0;
 double delayFor = 0.0;
 bool canPress = true;
 bool newMap = true;
-int currentlevel = 1;
+int currentlevel = 4;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -57,8 +57,8 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 	 // sets the initial state for the game
 	 g_eGameState = S_SPLASHSCREEN;
 	 PlaySound(TEXT("playMUSIC/Music/MainMenusnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	 g_sChar.m_cLocation.X = 45;
-	 g_sChar.m_cLocation.Y = 2;
+	 g_sChar.m_cLocation.X = 25; //45
+	 g_sChar.m_cLocation.Y = 8; //2
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"");
@@ -132,6 +132,7 @@ void update(double dt)
     g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
 	g_dElapsedTimeSec += dt;
+	FairyQuestion(&_fairy, &g_sChar, &g_Console);
 
     switch (g_eGameState)
     {
@@ -295,17 +296,17 @@ void splashScreenWait4()
 void gameplay()         // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacter(_block);    // moves the character, collision detection, physics, etc
+	moveCharacter(_block, &_fairy);    // moves the character, collision detection, physics, etc
 	timeDelay(_NPC);
 	Batterylife();
 	moveBlocks(_block, g_sChar);
 	respawnBlocks(_block);
-	//NpcPatrol(_NPC, g_sChar);
+	NpcPatrol(_NPC, g_sChar);
 	switches();			// so it can always update 
 	pressureplate(_block);	// plates updated continuously for the true and false conditions
 }
 
-void moveCharacter(Blocks _block[])
+void moveCharacter(Blocks _block[], Fairy *_fairy)
 {
 	bool bSomethingHappened = false;
 	bool slowingdwn = false;
@@ -313,12 +314,13 @@ void moveCharacter(Blocks _block[])
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	
+	if (!(*_fairy).fairyTrigger)
+	{
 		if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0) //press up
 		{
 			if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || // NO Walls or Gates in the way
 				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' ||	// '|' are walls, 'X' & 'T' are Gates
-				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T' ))
+				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
 			{
 				g_sChar.moveUp = true;
 			}
@@ -386,6 +388,8 @@ void moveCharacter(Blocks _block[])
 			if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
 				!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
 			{
+				_NPC[i].inTalkingRange = true;
+
 				if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
 				{
 					waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
@@ -394,7 +398,12 @@ void moveCharacter(Blocks _block[])
 					_NPC[i].tolerance++;
 				}
 			}
+			else
+			{
+				_NPC[i].inTalkingRange = false;
+			}
 		}
+	}
 		
 	
 	//Charcter struct has new booleans added
@@ -450,6 +459,7 @@ void processUserInput()
 		}
 	}
 }
+
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
@@ -1207,6 +1217,166 @@ void renderDialogue(Fairy *_fairy)
 		{
 			value = dialogue(_NPC[i].tolerance, _NPC);
 			g_Console.writeToBuffer(c, value);
+		}
+	}
+	int height = 0;
+	int width = 0;
+	int playerInput = 0;
+
+	if ((*_fairy).fairyTrigger == true)
+	{
+		c.X = (c.X / 2) - 5;
+		c.Y = 20;
+
+		if (g_abKeyPressed[K_1] && canPress == true)
+		{
+			playerInput = 1;
+			canPress = false;
+		}
+		if (g_abKeyPressed[K_2] && canPress == true)
+		{
+			playerInput = 2;
+			canPress = false;
+		}
+		if (g_abKeyPressed[K_3] && canPress == true)
+		{
+			playerInput = 3;
+			canPress = false;
+		}
+		if (g_abKeyPressed[K_4] && canPress == true)
+		{
+			playerInput = 4;
+			canPress = false;
+		}
+
+		if (canPress == false && !(g_abKeyPressed[K_1] || g_abKeyPressed[K_2] || g_abKeyPressed[K_3] || g_abKeyPressed[K_4])) //while canPress is false AND users isnt holding down on the key
+		{
+			canPress = true;
+		}
+
+		//Put into an external function as well
+		switch ((*_fairy).currentQuestionNum) //add bool for reset to map1, and set requirements REMEMBER
+		{
+		case 0://QUESTION 1
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check player input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2: //if wrong ans MUST create new layer of map 1, cannot swap currentMap
+			case 3:
+			case 4:
+				/*(*_fairy).fairyTrigger = false;
+				(*_fairy).currentQuestionNum = 0;
+
+				currentMap = Map1;
+				_NPC[0].tolerance = 0;
+				_NPC[1].tolerance = 0;
+				g_sChar.m_cLocation.X = 25;
+				g_sChar.m_cLocation.Y = 2;*/
+
+				//bool = true, add if condition below for bool true to set currentlevel = 1;
+			}
+			break;
+		case 1://QUESTION 2
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]); //draw question 2
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 4: //correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 1://wrong ans
+			case 2:
+			case 3:
+				//fail transition
+			}
+			break;
+		case 2://QUESTION 3
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);// draw question 3
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 4://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 1://wrong ans
+			case 2:
+			case 3:
+				//fail transition
+			}
+			break;
+		case 3: //QUESTION 4
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 4
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				//fail transition
+			}
+			break;
+		case 4:// QUESTION 5
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 5
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				//fail transition
+			}
+			break;
+		case 5://QUESTION 6
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 6
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				//inset something that tells you finished the game
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				(*_fairy).fairyTrigger = false;
+				(*_fairy).currentQuestionNum = 0;
+
+				currentlevel = 1;
+			}
+			break;
 		}
 	}
 }

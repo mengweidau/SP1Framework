@@ -9,7 +9,7 @@ void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar)
 		if (_NPC[i].movedelay > g_dElapsedTime)
 			return;
 
-		if (_NPC[i].moveCount == 0)
+		if (_NPC[i].moveCount == 0) //when moveCount is 0, will get a random direction
 		{
 			_NPC[i].dirChoice = rand() % 4 + 1; //set randrange from 1 to 4
 			_NPC[i].moveCount = 3; //reset moveCount to 3
@@ -40,10 +40,10 @@ void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar)
 				_NPC[i].right = false;
 				_NPC[i].moveCount = 0;
 			}
-			else if (!((maze[_NPC[i].m_cLocation.X + 1][_NPC[i].m_cLocation.Y] == '|') || //when npc.location.x + 1 NOT equal to wall,gates OR player position CAN move
+			else if (!((maze[_NPC[i].m_cLocation.X + 1][_NPC[i].m_cLocation.Y] == '|') || //when npc.location.x + 1 NOT equal to wall,gates OR player position CAN move AND not inside talkingRange
 					(maze[_NPC[i].m_cLocation.X + 1][_NPC[i].m_cLocation.Y] == 'X') ||
 					(maze[_NPC[i].m_cLocation.X + 1][_NPC[i].m_cLocation.Y] == 'T') ||
-					(_NPC[i].m_cLocation.X + 1 == g_sChar.m_cLocation.X && _NPC[i].m_cLocation.Y == g_sChar.m_cLocation.Y)))
+					(_NPC[i].m_cLocation.X + 1 == g_sChar.m_cLocation.X && _NPC[i].m_cLocation.Y == g_sChar.m_cLocation.Y)) && !_NPC[i].inTalkingRange)
 			{
 				_NPC[i].m_cLocation.X++; //move once
 				_NPC[i].moveCount--;	//subtract move count once
@@ -67,7 +67,7 @@ void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar)
 			else if (!((maze[_NPC[i].m_cLocation.X - 1][_NPC[i].m_cLocation.Y] == '|') ||
 					(maze[_NPC[i].m_cLocation.X - 1][_NPC[i].m_cLocation.Y] == 'X') ||
 					(maze[_NPC[i].m_cLocation.X - 1][_NPC[i].m_cLocation.Y] == 'T') ||
-					(_NPC[i].m_cLocation.X - 1 == g_sChar.m_cLocation.X && _NPC[i].m_cLocation.Y == g_sChar.m_cLocation.Y)))
+					(_NPC[i].m_cLocation.X - 1 == g_sChar.m_cLocation.X && _NPC[i].m_cLocation.Y == g_sChar.m_cLocation.Y)) && !_NPC[i].inTalkingRange)
 			{
 				_NPC[i].m_cLocation.X--; //move once
 				_NPC[i].moveCount--;	//subtract move count once
@@ -91,7 +91,7 @@ void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar)
 			else if (!((maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y - 1] == '|') ||
 					(maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y - 1] == 'X') ||
 					(maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y - 1] == 'T') ||
-					(_NPC[i].m_cLocation.Y - 1 == g_sChar.m_cLocation.Y && _NPC[i].m_cLocation.X == g_sChar.m_cLocation.X)))
+					(_NPC[i].m_cLocation.Y - 1 == g_sChar.m_cLocation.Y && _NPC[i].m_cLocation.X == g_sChar.m_cLocation.X)) && !_NPC[i].inTalkingRange)
 			{
 				_NPC[i].m_cLocation.Y--; //move once
 				_NPC[i].moveCount--;	//subtract move count once
@@ -115,7 +115,7 @@ void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar)
 			else if (!((maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y + 1] == '|') || 
 					(maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y + 1] == 'X') ||
 					(maze[_NPC[i].m_cLocation.X][_NPC[i].m_cLocation.Y + 1] == 'T') ||
-					(_NPC[i].m_cLocation.Y + 1 == g_sChar.m_cLocation.Y && _NPC[i].m_cLocation.X == g_sChar.m_cLocation.X)))
+					(_NPC[i].m_cLocation.Y + 1 == g_sChar.m_cLocation.Y && _NPC[i].m_cLocation.X == g_sChar.m_cLocation.X)) && !_NPC[i].inTalkingRange)
 			{
 				_NPC[i].m_cLocation.Y++; //move once
 				_NPC[i].moveCount--;	//subtract move count once
