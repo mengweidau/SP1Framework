@@ -27,7 +27,7 @@ double waitTime = 0.0;
 double delayFor = 0.0;
 bool canPress = true;
 bool newMap = true;
-int currentlevel = 0;
+int currentlevel = 1;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -300,7 +300,7 @@ void gameplay()         // gameplay logic
 	Batterylife();
 	moveBlocks(_block, g_sChar);
 	respawnBlocks(_block);
-	NpcPatrol(_NPC, g_sChar);
+	//NpcPatrol(_NPC, g_sChar);
 	switches();			// so it can always update 
 	pressureplate(_block);	// plates updated continuously for the true and false conditions
 }
@@ -313,60 +313,90 @@ void moveCharacter(Blocks _block[])
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0) //press up
-	{
-		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || // NO Walls or Gates in the way
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' ||	// '|' are walls, 'X' & 'T' are Gates
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
+	
+		if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0) //press up
 		{
-			g_sChar.moveUp = true; // then CAN move
-		}
-	}
-
-	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0) //press left
-	{
-		if (!(maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '|' || // NO Walls or Gates in the way
-			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' ||
-			maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'T'))
-		{
-			g_sChar.moveLeft = true; // then CAN move
-		}
-	}
-
-	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1) //press down
-	{
-		if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '|' ||	// NO Walls or Gates in the way
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' ||
-			maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
-		{
-			g_sChar.moveDown = true; // then CAN move
-		}
-	}
-
-	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1) //press right
-	{
-		if (!(maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '|' ||	// NO Walls or Gates in the way
-			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' ||
-			maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))	
-		{
-			g_sChar.moveRight = true; // then CAN move
-		}
-	}
-
-	for (int i = 0; i < npcNum; i++)
-	{
-		if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
-			!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
-		{
-			if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
+			if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '|' || // NO Walls or Gates in the way
+				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' ||	// '|' are walls, 'X' & 'T' are Gates
+				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T' ))
 			{
-				waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
-				bSomethingHappened = true;
-				_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
-				_NPC[i].tolerance++;
+				g_sChar.moveUp = true;
+			}
+			for (int i = 0; i < npcNum; i++)
+			{
+				if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y - 1 == _NPC[i].m_cLocation.Y)
+				{
+					g_sChar.moveUp = false;
+				}
 			}
 		}
-	}
+
+		if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0) //press left
+		{
+			if (!(maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '|' || // NO Walls or Gates in the way
+				maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' ||
+				maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'T'))
+			{
+				g_sChar.moveLeft = true; // then CAN move
+			}
+			for (int i = 0; i < npcNum; i++)
+			{
+				if (g_sChar.m_cLocation.X - 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+				{
+					g_sChar.moveLeft = false;
+				}
+			}
+		}
+
+		if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1) //press down
+		{
+			if (!(maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '|' ||	// NO Walls or Gates in the way
+				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' ||
+				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
+			{
+				g_sChar.moveDown = true; // then CAN move
+			}
+			for (int i = 0; i < npcNum; i++)
+			{
+				if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y + 1 == _NPC[i].m_cLocation.Y)
+				{
+					g_sChar.moveDown = false;
+				}
+			}
+		}
+
+		if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1) //press right
+		{
+			if (!(maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '|' ||	// NO Walls or Gates in the way
+				maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' ||
+				maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
+			{
+				g_sChar.moveRight = true; // then CAN move
+			}
+			for (int i = 0; i < npcNum; i++)
+			{
+				if (g_sChar.m_cLocation.X + 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+				{
+					g_sChar.moveRight = false;
+				}
+			}
+		}
+		for (int i = 0; i < npcNum; i++)
+		{
+			if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
+				!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
+			{
+				if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
+				{
+					waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
+					bSomethingHappened = true;
+					_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
+					_NPC[i].tolerance++;
+				}
+			}
+		}
+		
+	
 	//Charcter struct has new booleans added
 	if (g_sChar.moveUp == true) // When CHARACTER's moveUp == true
 	{
