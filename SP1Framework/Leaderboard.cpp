@@ -47,7 +47,7 @@ void renderLeaderboard()
 		{	
 			if (topScore == 0)
 			{	
-				topScore = possiblescores[a];
+				topScore = 99999999;
 			}
 			if (topScore > possiblescores[a])
 			{	
@@ -71,7 +71,7 @@ void renderLeaderboard()
 	for (int b = 0; b < i && b < 10; b++)
 	{
 		std::string str;
-		char digits[20];
+		char digits[50];
 		str = to_string(topscores[b]);
 
 		std::strcpy(digits, str.c_str());
