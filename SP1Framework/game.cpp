@@ -26,7 +26,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 1;
+int currentlevel = 5;
 bool canPress = true;
 
 // Game specific variables here
@@ -57,8 +57,8 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 	 // sets the initial state for the game
 	 g_eGameState = S_SPLASHSCREEN;
 	 PlaySound(TEXT("playMUSIC/Music/MainMenusnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	 g_sChar.m_cLocation.X = 45; //45
-	 g_sChar.m_cLocation.Y = 2; //2
+	 g_sChar.m_cLocation.X = 38; //45
+	 g_sChar.m_cLocation.Y = 10; //2
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"");
@@ -159,12 +159,24 @@ void update(double dt)
 			break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
+		case S_CONGRATZ: congratz();
+			break;
     }
 
-	if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '*')
+	if (currentlevel != 5)
 	{
-		currentlevel++;
-		loadMap = true;
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '*')
+		{
+			currentlevel++;
+			loadMap = true;
+		}
+	}
+	else
+	{ 
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '*')
+		{
+			g_eGameState = S_CONGRATZ;
+		}
 	}
 }
 //--------------------------------------------------------------
@@ -201,6 +213,8 @@ void render()
 		case S_SELECTLEA: renderLeaderboard();
 			break;
 		case S_SELECTCRE: renderCredits();
+			break;
+		case S_CONGRATZ: rendercongratz();
 			break;
         case S_GAME: renderGame();
             break;
@@ -889,16 +903,16 @@ void renderCredits()
 	g_Console.writeToBuffer(c, " ", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Wafieqa", 0x47);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Jolyn", 0x47);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 6;
 	g_Console.writeToBuffer(c, "Brandon", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
 	g_Console.writeToBuffer(c, "Meng Wei", 0x47);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 6;
+	g_Console.writeToBuffer(c, "Wafieqa", 0x47);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 6;
+	g_Console.writeToBuffer(c, "Jolyn", 0x47);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
 	g_Console.writeToBuffer(c, " ", 0x47);
@@ -916,6 +930,44 @@ void renderCreditsLogic()
 	{
 		setBounceTime(0.3f);
 		g_eGameState = S_SPLASHSCREEN;
+	}
+}
+
+void rendercongratz()
+{
+	COORD c = g_Console.getConsoleSize();
+
+	c.Y = 0;
+	c.X = c.X / 2 - 25;
+
+	string line;
+	ifstream myfile("congratz.txt");
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			g_Console.writeToBuffer(c, line, 0x37);
+			c.Y++;
+		}
+		myfile.close();
+	}
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 25;
+	g_Console.writeToBuffer(c, "'Enter' to go back main menu", 0x47);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 25;
+	g_Console.writeToBuffer(c, "'Backspace' to quit", 0x47);
+}
+
+void congratz()
+{
+	if (g_abKeyPressed[K_ENTER])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+	if (g_abKeyPressed[K_BACK]) // when backspace ,QUIT
+	{
+		g_bQuitGame = true; 
 	}
 }
 
@@ -961,6 +1013,11 @@ void maps(int level)
 		break;
 	case 4:
 		mapname = "fairymap.txt";
+		g_sChar.m_cLocation.X = 3;
+		g_sChar.m_cLocation.Y = 9;
+		break;
+	case 5:
+		mapname = "fairyends.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
 		break;
@@ -1214,6 +1271,8 @@ void renderDialogue(Fairy *_fairy)
 			{
 			case 1://correct ans
 				//inset something that tells you finished the game
+				(*_fairy).fairyTrigger = false;
+				lastmap();
 				break;
 			case 2://wrong ans
 			case 3:
@@ -1234,6 +1293,12 @@ void renderDialogue(Fairy *_fairy)
 			}
 		}
 	}
+}
+
+void lastmap()
+{
+	currentlevel++;
+	loadMap = true;
 }
 
 void beginningcutscene() //beginning cutscence 
@@ -1521,7 +1586,6 @@ void beginningcutscene() //beginning cutscence
 	//	g_eGameState = S_SPLASHSCREEN;
 	//}
 }
-
 
 void rendercutscene()
 {
