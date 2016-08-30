@@ -26,7 +26,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 4;
+int currentlevel = 1;
 bool canPress = true;
 
 // Game specific variables here
@@ -57,8 +57,8 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 	 // sets the initial state for the game
 	 g_eGameState = S_SPLASHSCREEN;
 	 PlaySound(TEXT("playMUSIC/Music/MainMenusnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	 g_sChar.m_cLocation.X = 25; //45
-	 g_sChar.m_cLocation.Y = 8; //2
+	 g_sChar.m_cLocation.X = 45; //45
+	 g_sChar.m_cLocation.Y = 2; //2
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"");
@@ -941,7 +941,6 @@ void maps(int level)
 	{
 	case 0:
 		mapname = "tutorial.txt";
-		
 		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
@@ -1112,117 +1111,116 @@ void renderDialogue(Fairy *_fairy)
 			canPress = true;
 		}
 
-			switch ((*_fairy).currentQuestionNum) //add bool for reset to map1, and set requirements REMEMBER
+		switch ((*_fairy).currentQuestionNum) //add bool for reset to map1, and set requirements REMEMBER
+		{
+		case 0://QUESTION 1
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question
+			for (int i = 0; i < 4; i++)//draw answers 
 			{
-			case 0://QUESTION 1
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check player input
-				{
-				case 1://correct ans
-					(*_fairy).currentQuestionNum++;
-					break;
-				case 2: //wrong ans
-				case 3:
-				case 4:
-					(*_fairy).wrongAns = true;
-				}
-				break;
-			case 1://QUESTION 2
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]); //draw question 2
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check input
-				{
-				case 4: //correct ans
-					(*_fairy).currentQuestionNum++;
-					break;
-				case 1://wrong ans
-				case 2:
-				case 3:
-					(*_fairy).wrongAns = true;
-				}
-				break;
-			case 2://QUESTION 3
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);// draw question 3
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check input
-				{
-				case 4://correct ans
-					(*_fairy).currentQuestionNum++;
-					break;
-				case 1://wrong ans
-				case 2:
-				case 3:
-					(*_fairy).wrongAns = true;
-				}
-				break;
-			case 3: //QUESTION 4
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 4
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check input
-				{
-				case 1://correct ans
-					(*_fairy).currentQuestionNum++;
-					break;
-				case 2://wrong ans
-				case 3:
-				case 4:
-					(*_fairy).wrongAns = true;
-				}
-				break;
-			case 4:// QUESTION 5
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 5
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check input
-				{
-				case 1://correct ans
-					(*_fairy).currentQuestionNum++;
-					break;
-				case 2://wrong ans
-				case 3:
-				case 4:
-					(*_fairy).wrongAns = true;
-				}
-				break;
-			case 5://QUESTION 6
-				g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 6
-				for (int i = 0; i < 4; i++)//draw answers 
-				{
-					c.Y++;
-					g_Console.writeToBuffer(c, (*_fairy).ans[i]);
-				}
-				switch (playerInput)//check input
-				{
-				case 1://correct ans
-					   //inset something that tells you finished the game
-					break;
-				case 2://wrong ans
-				case 3:
-				case 4:
-					(*_fairy).wrongAns = true;
-				}
-				break;
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
 			}
+			switch (playerInput)//check player input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2: //wrong ans
+			case 3:
+			case 4:
+				(*_fairy).wrongAns = true;
+			}
+			break;
+		case 1://QUESTION 2
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]); //draw question 2
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 4: //correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 1://wrong ans
+			case 2:
+			case 3:
+				(*_fairy).wrongAns = true;
+			}
+			break;
+		case 2://QUESTION 3
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);// draw question 3
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 4://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 1://wrong ans
+			case 2:
+			case 3:
+				(*_fairy).wrongAns = true;
+			}
+			break;
+		case 3: //QUESTION 4
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 4
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				(*_fairy).wrongAns = true;
+			}
+			break;
+		case 4:// QUESTION 5
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 5
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				(*_fairy).currentQuestionNum++;
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				(*_fairy).wrongAns = true;
+			}
+			break;
+		case 5://QUESTION 6
+			g_Console.writeToBuffer(c, (*_fairy).question[(*_fairy).currentQuestionNum]);//draw question 6
+			for (int i = 0; i < 4; i++)//draw answers 
+			{
+				c.Y++;
+				g_Console.writeToBuffer(c, (*_fairy).ans[i]);
+			}
+			switch (playerInput)//check input
+			{
+			case 1://correct ans
+				//inset something that tells you finished the game
+				break;
+			case 2://wrong ans
+			case 3:
+			case 4:
+				(*_fairy).wrongAns = true;
+			}
+			break;
 		}
 		if ((*_fairy).wrongAns == true)
 		{
@@ -1235,6 +1233,7 @@ void renderDialogue(Fairy *_fairy)
 				_NPC[i].tolerance = 0;
 			}
 		}
+	}
 }
 
 void beginningcutscene() //beginning cutscence 
