@@ -83,6 +83,7 @@ enum EGAMESTATES
 	S_SELECTMODE4,
 	S_SELECTLEA,
 	S_SELECTCRE,
+	S_CONGRATZ,
     S_COUNT
 };
 
@@ -216,5 +217,8 @@ void renderplate();//rendering of the presure plate
 void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar);
 void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console);
 void FairyQuiz(Fairy *_fairy, Console *g_Console);
+void rendercongratz();
+void congratz();
+void lastmap();
 
 #endif // _GAME_H
