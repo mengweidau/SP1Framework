@@ -251,7 +251,6 @@ void renderSelectmodeLogic()
 		{
 			if (g_abKeyPressed[K_ENTER])
 			{
-				g_dElapsedTimeSec = 0;
 				g_dBounceTime = 0;
 				g_eGameState = S_GAME;
 			}
@@ -737,6 +736,7 @@ void maps(int level)
 		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
+		g_dElapsedTimeSec = 0;
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
