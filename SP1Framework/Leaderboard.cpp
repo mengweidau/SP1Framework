@@ -49,17 +49,17 @@ void renderLeaderboard()
 			{	
 				topScore = 99999999; // sets the benchmark for timing
 			}
-			if (topScore > possiblescores[a]) 
+			if (topScore > possiblescores[a]) //checks if the highscore is slower than the possiblescores recorded
 			{	
-				bool inArray = false;
-				for (int c = 0; c < 10; c++)
+				bool inArray = false; // makes boolean false
+				for (int c = 0; c < 10; c++) // checks all the topscores in highscore to check if the time that was faster than the highscore is not already in the topscores
 				{	
 					if (topscores[c] == possiblescores[a])
 					{
-						inArray = true;
+						inArray = true; // makes boolean true if there is alreaady the timing in the topscores
 					}
 				}
-				if (!inArray)	
+				if (!inArray)	// if the timing is not already recorded , it takes over the current highscore 
 				{
 					topScore = possiblescores[a];
 				}
