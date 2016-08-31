@@ -30,7 +30,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 4;
+int currentlevel = 0;
 bool canPress = true;
 
 // Game specific variables here
@@ -732,6 +732,8 @@ void maps(int level)
 	{
 	case 0:
 		mapname = "tutorial.txt";
+		g_sChar.m_cLocation.X = 45;
+		g_sChar.m_cLocation.Y = 2;
 		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
