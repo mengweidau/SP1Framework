@@ -335,7 +335,21 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'X' ||	// '|' are walls, 'X' & 'T' are Gates
 				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'T'))
 			{
-				g_sChar.moveUp = true;
+
+				//slowing down
+				if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == '.')
+				{
+					g_sChar.moveUp = true;
+					slowingdwn = true;
+					bSomethingHappened = false;
+				}
+				else
+				{
+					g_sChar.moveUp = true;
+					slowingdwn = false;
+					bSomethingHappened = true;
+				}
+
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
@@ -352,7 +366,19 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 				maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'X' ||
 				maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == 'T'))
 			{
-				g_sChar.moveLeft = true; // then CAN move
+				//slowing down
+				if (maze[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y] == '.')
+				{
+					g_sChar.moveLeft = true; // then CAN move
+					slowingdwn = true;
+					bSomethingHappened = false;
+				}
+				else
+				{
+					g_sChar.moveLeft = true; // then CAN move
+					slowingdwn = false;
+					bSomethingHappened = true;
+				}
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
@@ -369,7 +395,19 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'X' ||
 				maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == 'T'))
 			{
-				g_sChar.moveDown = true; // then CAN move
+				//slowing down
+				if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y + 1] == '.')
+				{
+					g_sChar.moveDown = true; // then CAN move
+					slowingdwn = true;
+					bSomethingHappened = false;
+				}
+				else
+				{
+					g_sChar.moveDown = true; // then CAN move
+					slowingdwn = false;
+					bSomethingHappened = true;
+				}
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
@@ -386,7 +424,19 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 				maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'X' ||
 				maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 'T'))
 			{
-				g_sChar.moveRight = true; // then CAN move
+				//slowing down
+				if (maze[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == '.')
+				{
+					g_sChar.moveRight = true; // then CAN move
+					slowingdwn = true;
+					bSomethingHappened = false;
+				}
+				else
+				{
+					g_sChar.moveRight = true; // then CAN move
+					slowingdwn = false;
+					bSomethingHappened = true;
+				}
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
