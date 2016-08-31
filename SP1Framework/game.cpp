@@ -30,7 +30,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 0;
+int currentlevel = 4;
 bool canPress = true;
 
 // Game specific variables here
@@ -711,7 +711,7 @@ void renderCreditsLogic()
 
 void renderGame()
 {
-    renderMap(currentlevel);        // renders the map to the buffer first
+    renderMap(currentlevel);	// renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
 	renderVision(_NPC, _block); // Fog Of War
 	renderBattery(); // Flashlight battery
@@ -810,7 +810,7 @@ void renderMap(int level)
 				maze[x][y] = '*';
 			}
 			c.X = x;
-			if (currentlevel != 0 || currentlevel != 4)
+			if (currentlevel != 4)
 			{
 				g_Console.writeToBuffer(c, maze[x][y], 0x00);
 			}
