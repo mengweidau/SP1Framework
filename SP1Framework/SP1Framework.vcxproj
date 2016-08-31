@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="blocks.cpp" />
+    <ClCompile Include="colour.cpp" />
     <ClCompile Include="dialogue.cpp" />
     <ClCompile Include="FairyQuiz.cpp" />
     <ClCompile Include="Framework\console.cpp" />
@@ -96,6 +97,7 @@
   <ItemGroup>
     <ClInclude Include="Battery.h" />
     <ClInclude Include="blocks.h" />
+    <ClInclude Include="colour.h" />
     <ClInclude Include="dialogue.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
