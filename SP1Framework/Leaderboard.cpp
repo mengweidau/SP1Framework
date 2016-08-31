@@ -25,8 +25,8 @@ void renderLeaderboard()
 		}
 		myFile.close();
 	}
-	double topscores[10] = { 0.0, };
-	double possiblescores[150] = { 0.0, };
+	double topscores[10] = { 0.0, }; // to contain the top 10 scores to print out in leaderboards.
+	double possiblescores[500] = { 0.0, }; // to contain all possible scores (can increase array size to fit more than 150 entries).
 
 	int i = 0;
 
@@ -35,21 +35,21 @@ void renderLeaderboard()
 	{		
 		while (getline(myfile, line))
 		{	
-			possiblescores[i] = atof(line.c_str());
-			i++;
+			possiblescores[i] = atof(line.c_str()); // after getting all the timings from txt file , convert it from string to double value
+			i++; // check how many timings you have in total
 		}	
 		myfile.close();
 	}
-	for (int topscoresCount = 0; topscoresCount < 10; topscoresCount++)	
+	for (int topscoresCount = 0; topscoresCount < 10; topscoresCount++)	// runs 10 times for 10 highscores
 	{
 		double topScore = 0;	
-		for (int a = 0; a < i; a++)
+		for (int a = 0; a < i; a++) // runs for every timing in the txt file
 		{	
-			if (topScore == 0)
+			if (topScore == 0) // this is to set the highest possible timing when leaderboard resets
 			{	
-				topScore = 99999999;
+				topScore = 99999999; // sets the benchmark for timing
 			}
-			if (topScore > possiblescores[a])
+			if (topScore > possiblescores[a]) 
 			{	
 				bool inArray = false;
 				for (int c = 0; c < 10; c++)
