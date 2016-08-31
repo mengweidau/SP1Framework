@@ -73,14 +73,8 @@ enum EGAMESTATES
 {
 	S_BEGIN,
 	S_SPLASHSCREEN,
-	S_SPLASHSCREEN2,
-	S_SPLASHSCREEN3,
-	S_SPLASHSCREEN4,
 	S_GAME,
 	S_SELECTMODE,
-	S_SELECTMODE2,
-	S_SELECTMODE3,
-	S_SELECTMODE4,
 	S_SELECTLEA,
 	S_SELECTCRE,
 	S_CONGRATZ,
@@ -165,29 +159,13 @@ void render      ( void );      // renders the current state of the game to the 
 void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
-void splashScreenWait2();	// render splash screen with hightlighted leaderboard
-void splashScreenWait3();	// render splash screen with hightlighted CREDITS
-void splashScreenWait4();	// render splash screen with hightlighted QUIT
-
 void gameplay();            // gameplay logic
 void moveCharacter(Blocks _block[], Fairy *_fairy);       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
-
 void renderSplashScreen();  // renders the splash screen (START GAME)
-void renderSplashScreen2(); // renders the splash screen (LEA)
-void renderSplashScreen3(); // renders the splash screen (CREDITS)
-void renderSplashScreen4(); // renders the splash screen (QUIT)
-
 void renderSelectmode();	// render the select mode menu (STORY)
-void renderSelectmode2();	// render the select mode menu (LEVEL)
-void renderSelectmode3();	// render the select mode menu (QUIT)
-void renderSelectmode4();	// render the select mode menu (BACK)
-
 void renderSelectmodeLogic(); // update theselect mode menu (STORY)
-void renderSelectmode2Logic(); // update theselect mode menu (LEVEL)
-void renderSelectmode3Logic(); // update theselect mode menu (QUIT)
-void renderSelectmode4Logic(); // update theselect mode menu (BACK)
 
 void renderCredits();		//render the credits
 void renderCreditsLogic();	// update the credits
