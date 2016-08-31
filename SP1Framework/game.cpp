@@ -730,6 +730,7 @@ void maps(int level)
 	switch (level)
 	{
 	case 0:
+		g_dElapsedTimeSec = 0;
 		mapname = "tutorial.txt";
 		g_sChar.m_cLocation.X = 45;
 		g_sChar.m_cLocation.Y = 2;
