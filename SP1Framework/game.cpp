@@ -750,7 +750,6 @@ void maps(int level)
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
-		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 2:
 		mapname = "map2.txt";
