@@ -777,6 +777,10 @@ void maps(int level)
 		PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 5:
+		if (g_dElapsedTimeSec != 0)
+		{
+			leaderboard(to_string(g_dElapsedTimeSec));
+		}
 		mapname = "fairyends.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
