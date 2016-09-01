@@ -194,7 +194,6 @@ void pressureplate();//game logic
 void renderplate();//rendering of the presure plate
 void NpcPatrol(SGameNPC _NPC[], SGameChar g_sChar);
 void FairyQuestion(Fairy *_fairy, SGameChar *g_sChar, Console *g_Console);
-void FairyQuiz(Fairy *_fairy, Console *g_Console);
 void rendercongratz();
 void congratz();
 void lastmap();
