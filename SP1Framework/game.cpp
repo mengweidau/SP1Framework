@@ -31,11 +31,8 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-<<<<<<< HEAD
-int currentlevel = 0;
-=======
-int currentlevel = 3;
->>>>>>> acf1268a78d0921cde724f7052ca2b66e55ceeb0
+
+int currentlevel = 1;
 bool canPress = true;
 
 // Game specific variables here
@@ -742,10 +739,7 @@ void maps(int level)
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
-<<<<<<< HEAD
-=======
 		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
->>>>>>> acf1268a78d0921cde724f7052ca2b66e55ceeb0
 		break;
 	case 2:
 		mapname = "map2.txt";
