@@ -10,10 +10,10 @@ void renderVision(SGameNPC _NPC[], Blocks _block[])
 	if (g_eGameState = S_GAME)
 	{
 
-		int left = 5;//5
-		int right = 5;//5
-		int up = 3;//3
-		int down = 3;//3
+		int left = 50;//5
+		int right = 50;//5
+		int up = 30;//3
+		int down = 30;//3
 		if (life >= 0.9)
 		{
 			if (g_abKeyPressed[K_FLASH])
@@ -48,14 +48,18 @@ void renderVision(SGameNPC _NPC[], Blocks _block[])
 				}
 				for (int i = 0; i < npcNum; i++)
 				{
-					if (!(c == _NPC[i].m_cLocation.Y && r == _NPC[i].m_cLocation.X)) //outside line of sight
-						charColor1 = 0x00;
-					else//inside line of sight
+					if (_NPC[i].active)
 					{
-						charColor1 = 0x0D;
-						// Draw the location of the Npc
-						g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)2, charColor1);
+						if (!(c == _NPC[i].m_cLocation.Y && r == _NPC[i].m_cLocation.X)) //outside line of sight
+							charColor1 = 0x00;
+						else//inside line of sight
+						{
+							charColor1 = 0x0D;
+							// Draw the location of the Npc
+							g_Console.writeToBuffer(_NPC[i].m_cLocation, (char)2, charColor1);
+						}
 					}
+					
 				}
 				for (int i = 0; i < blockNum; i++)
 				{
@@ -64,7 +68,6 @@ void renderVision(SGameNPC _NPC[], Blocks _block[])
 					else//inside line of sight
 					{
 						charColor2 = 0x0D;
-						// Draw the location of the Npc
 						switch (currentlevel)
 						{
 						case 0://tutorial level

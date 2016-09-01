@@ -324,9 +324,12 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
-				if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y - 1 == _NPC[i].m_cLocation.Y)
+				if (_NPC[i].active)
 				{
-					g_sChar.moveUp = false;
+					if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y - 1 == _NPC[i].m_cLocation.Y)
+					{
+						g_sChar.moveUp = false;
+					}
 				}
 			}
 		}
@@ -353,9 +356,12 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
-				if (g_sChar.m_cLocation.X - 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+				if (_NPC[i].active)
 				{
-					g_sChar.moveLeft = false;
+					if (g_sChar.m_cLocation.X - 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+					{
+						g_sChar.moveLeft = false;
+					}
 				}
 			}
 		}
@@ -382,9 +388,12 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
-				if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y + 1 == _NPC[i].m_cLocation.Y)
+				if (_NPC[i].active)
 				{
-					g_sChar.moveDown = false;
+					if (g_sChar.m_cLocation.X == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y + 1 == _NPC[i].m_cLocation.Y)
+					{
+						g_sChar.moveDown = false;
+					}
 				}
 			}
 		}
@@ -411,34 +420,44 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 			}
 			for (int i = 0; i < npcNum; i++)
 			{
-				if (g_sChar.m_cLocation.X + 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+				if (_NPC[i].active)
 				{
-					g_sChar.moveRight = false;
+					if (g_sChar.m_cLocation.X + 1 == _NPC[i].m_cLocation.X && g_sChar.m_cLocation.Y == _NPC[i].m_cLocation.Y)
+					{
+						g_sChar.moveRight = false;
+					}
 				}
 			}
 		}
 		for (int i = 0; i < npcNum; i++)
 		{
-			if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
-				!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
+			if (_NPC[i].active)
 			{
-				_NPC[i].inTalkingRange = true;
-
-				if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
+				if (!(g_sChar.m_cLocation.X >(_NPC[i].m_cLocation.X) + 1) && !(g_sChar.m_cLocation.X < (_NPC[i].m_cLocation.X) - 1) && //check horizontal by 1 and vertical by 1
+					!(g_sChar.m_cLocation.Y >(_NPC[i].m_cLocation.Y) + 1) && !(g_sChar.m_cLocation.Y < (_NPC[i].m_cLocation.Y) - 1))
 				{
-					waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
-					bSomethingHappened = true;
-					_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
-					_NPC[i].tolerance++;
+					_NPC[i].inTalkingRange = true;
+
+					if (g_abKeyPressed[K_SPACE] && _NPC[i].talked == false)
+					{
+						waitTime = g_dElapsedTime + 6.0; //sets waitTime with current elapsedTime + delay
+						bSomethingHappened = true;
+						_NPC[i].talked = true; //sets NPC bool to true, increment tolerance by 1
+						_NPC[i].tolerance++;
+					}
 				}
-			}
-			else
-			{
-				_NPC[i].inTalkingRange = false;
+				else
+				{
+					_NPC[i].inTalkingRange = false;
+				}
 			}
 		}
 	}
-		
+	if (g_abKeyPressed[K_SPACE])
+	{
+		currentlevel++;
+		loadMap = true;
+	}
 	
 	//Charcter struct has new booleans added
 	if (g_sChar.moveUp == true) // When CHARACTER's moveUp == true

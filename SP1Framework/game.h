@@ -108,7 +108,7 @@ struct SGameNPC
 	string str1;
 	string str2;
 	bool talked;
-
+	bool active;
 	bool right;
 	bool left;
 	bool up;
