@@ -10,10 +10,10 @@ void renderVision(SGameNPC _NPC[], Blocks _block[])
 	if (g_eGameState = S_GAME)
 	{
 
-		int left = 50;//5
-		int right = 50;//5
-		int up = 30;//3
-		int down = 30;//3
+		int left = 5;//5
+		int right = 5;//5
+		int up = 3;//3
+		int down = 3;//3
 		if (life >= 0.9)
 		{
 			if (g_abKeyPressed[K_FLASH])

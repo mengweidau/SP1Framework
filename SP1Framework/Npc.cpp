@@ -82,7 +82,9 @@ void Npc(SGameNPC _NPC[])//edited
 				_NPC[i].str1 = "GLUTTONY : I love to go around to different restaurants in my town to eat various gourmet food ranging from cheesecakes to steak ~! Maybe I should visit Cornerstone,that restaurant PRIDE posted on his Facebook after I get out of this labyrinth…";
 				_NPC[i].str2 = "GLUTTONY : I’m too hungry to talk to you…";
 				_NPC[i].talked = false;
+
 				_NPC[i].active = true;
+
 				_NPC[i].right = true;
 				_NPC[i].left = false;
 				_NPC[i].up = false;
@@ -97,7 +99,9 @@ void Npc(SGameNPC _NPC[])//edited
 				_NPC[i].str1 = "LUST : I always desire to have so many things to myself, like that sleek new Bugatti which I saw on the street the other day… Or maybe the new IPhone that came out just a few days ago… Better yet, I also would like PRIDE’s new partner… heh…";
 				_NPC[i].str2 = "LUST : Among all the things I want, talking to you is not one of them.";
 				_NPC[i].talked = false;
+
 				_NPC[i].active = true;
+
 				_NPC[i].right = true;
 				_NPC[i].left = false;
 				_NPC[i].up = false;
@@ -112,7 +116,9 @@ void Npc(SGameNPC _NPC[])//edited
 				_NPC[i].str1 = "PRIDE : I was an avid Instagrammer as well as a regular Facebook poster. I had 36948 friends and 64268 followers on my social media so I don’t know why I’m punished even though I’m so popular!";
 				_NPC[i].str2 = "PRIDE : I have no more time for you, I need to make sure I get out of here.";
 				_NPC[i].talked = false;
+
 				_NPC[i].active = true;
+
 				_NPC[i].right = true;
 				_NPC[i].left = false;
 				_NPC[i].up = false;
@@ -122,6 +128,9 @@ void Npc(SGameNPC _NPC[])//edited
 				_NPC[i].active = false;
 				break;
 			}
+			break;
+		case 4: 
+			_NPC[i].active = false;
 			break;
 		}
 	}

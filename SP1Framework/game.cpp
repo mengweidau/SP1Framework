@@ -32,7 +32,7 @@ double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
 
-int currentlevel = 1;
+int currentlevel = 0;
 bool canPress = true;
 
 // Game specific variables here
@@ -453,11 +453,11 @@ void moveCharacter(Blocks _block[], Fairy *_fairy)
 			}
 		}
 	}
-	if (g_abKeyPressed[K_SPACE])
+	/*if (g_abKeyPressed[K_FLASH]) //test
 	{
 		currentlevel++;
 		loadMap = true;
-	}
+	}*/
 	
 	//Charcter struct has new booleans added
 	if (g_sChar.moveUp == true) // When CHARACTER's moveUp == true
