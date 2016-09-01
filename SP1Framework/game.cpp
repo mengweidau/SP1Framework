@@ -31,7 +31,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 4;
+int currentlevel = 3;
 bool canPress = true;
 
 // Game specific variables here
@@ -486,10 +486,6 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_bQuitGame = true;
-		if (g_dElapsedTimeSec != 0)
-		{
-			leaderboard(to_string(g_dElapsedTimeSec));
-		}
 	}
 }
 
@@ -735,14 +731,14 @@ void maps(int level)
 		mapname = "tutorial.txt";
 		g_sChar.m_cLocation.X = 45;
 		g_sChar.m_cLocation.Y = 2;
-		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
 		g_dElapsedTimeSec = 0;
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
-		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 2:
 		mapname = "map2.txt";
@@ -758,11 +754,13 @@ void maps(int level)
 		mapname = "fairymap.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
+		PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 5:
 		mapname = "fairyends.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
+		PlaySound(TEXT("playMUSIC/Music/Endingsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	}
 
