@@ -32,7 +32,7 @@ double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
 
-int currentlevel = 0;
+int currentlevel = 4;
 bool canPress = true;
 
 // Game specific variables here
@@ -135,7 +135,10 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
 	g_dDeltaTime = dt;
-	g_dElapsedTimeSec += dt;
+	if (currentlevel == 1 || currentlevel == 2 || currentlevel == 3 || currentlevel == 4)
+	{
+		g_dElapsedTimeSec += dt;
+	}
 	FairyQuestion(&_fairy, &g_sChar, &g_Console);
     switch (g_eGameState)
     {
@@ -738,14 +741,12 @@ void maps(int level)
 	switch (level)
 	{
 	case 0:
-		g_dElapsedTimeSec = 0;
 		mapname = "tutorial.txt";
 		g_sChar.m_cLocation.X = 45;
 		g_sChar.m_cLocation.Y = 2;
 		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
-		g_dElapsedTimeSec = 0;
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
