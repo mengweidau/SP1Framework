@@ -19,7 +19,7 @@ using namespace std;
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
 const unsigned int npcNum = 6; 
-const unsigned int blockNum = 3;
+const unsigned int blockNum = 4;
 
 extern double  g_dElapsedTime;
 extern double waitTime;

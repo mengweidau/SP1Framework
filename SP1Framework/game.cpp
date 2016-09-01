@@ -31,7 +31,7 @@ bool    g_abKeyPressed[K_COUNT];
 double waitTime = 0.0;
 double delayFor = 0.0;
 bool loadMap = true;
-int currentlevel = 4;
+int currentlevel = 0;
 bool canPress = true;
 
 // Game specific variables here
@@ -735,14 +735,13 @@ void maps(int level)
 		mapname = "tutorial.txt";
 		g_sChar.m_cLocation.X = 45;
 		g_sChar.m_cLocation.Y = 2;
-		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 1:
 		g_dElapsedTimeSec = 0;
 		mapname = "map1.txt";
 		g_sChar.m_cLocation.X = 32;
 		g_sChar.m_cLocation.Y = 2;
-		//PlaySound(TEXT("playMUSIC/Music/Mapsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 2:
 		mapname = "map2.txt";
@@ -758,11 +757,13 @@ void maps(int level)
 		mapname = "fairymap.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
+		PlaySound(TEXT("playMUSIC/Music/Fairysnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	case 5:
 		mapname = "fairyends.txt";
 		g_sChar.m_cLocation.X = 3;
 		g_sChar.m_cLocation.Y = 9;
+		PlaySound(TEXT("playMUSIC/Music/Endingsnd.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 		break;
 	}
 
@@ -824,7 +825,10 @@ void renderMap(int level)
 
 	c.Y += 1;
 	c.X = 0;
-	g_Console.writeToBuffer(c, "*TALK TO NPCS!!!", 0x74);
+	g_Console.writeToBuffer(c, "*Talk to the NPCs", 0x47);
+	c.Y += 0;
+	c.X = 20;
+	g_Console.writeToBuffer(c, "F - Flashlight", 0x47);
 
 }
 
