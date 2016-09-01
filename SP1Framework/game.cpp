@@ -43,7 +43,6 @@ Fairy _fairy;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
-
 // Console object
  Console g_Console(77, 25, "SP1 Framework");
 
@@ -68,7 +67,6 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 
 	 // sets the width, height and the font name to use in the console
 	 g_Console.setConsoleFont(0, 16, L"Consolas");
-	 beginningcutscene();
  }
 
 //--------------------------------------------------------------
@@ -141,8 +139,6 @@ void update(double dt)
 	FairyQuestion(&_fairy, &g_sChar, &g_Console);
     switch (g_eGameState)
     {
-		case S_BEGIN: beginningcutscene();//to show cutscene
-			break;
         case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
             break;
 		case S_SELECTLEA: renderLeaderboardlogic(); //game logic for the leaderboard screen
@@ -186,8 +182,6 @@ void render()
     clearScreen();      // clears the current screen and draw from scratch 
     switch (g_eGameState)
     {
-		case S_BEGIN: rendercutscene();
-			break;
         case S_SPLASHSCREEN: renderSplashScreen();
             break;
 		case S_SELECTMODE: renderSelectmode();
@@ -259,7 +253,7 @@ void renderSelectmodeLogic()
 
 		}
 
-		if (color == 2)
+		if (color == 1)
 		{
 			if (g_abKeyPressed[K_ENTER])
 			{
@@ -267,7 +261,7 @@ void renderSelectmodeLogic()
 			}
 		}
 
-		if (color == 3)
+		if (color == 2)
 		{
 			if (g_abKeyPressed[K_ENTER])
 			{
@@ -607,22 +601,19 @@ void renderSelectmode()
 	c.X = c.X / 2 + 23;
 	g_Console.writeToBuffer(c, "Story", getColour(color,0));
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Level editor", getColour(color,1));
-	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 5;
-	g_Console.writeToBuffer(c, "Quit", getColour(color,2));
+	g_Console.writeToBuffer(c, "Quit", getColour(color,1));
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	g_Console.writeToBuffer(c, "Back", getColour(color,3));
+	g_Console.writeToBuffer(c, "Back", getColour(color,2));
 
-	if (color > 3)
+	if (color > 2)
 	{
 		color = 0;
 	}
 	if (color < 0)
 	{
-		color = 3;
+		color = 2;
 	}
 
 	if (g_dBounceTime > g_dElapsedTime)
@@ -842,9 +833,9 @@ void renderMap(int level)
 
 	c.Y += 1;
 	c.X = 0;
-	g_Console.writeToBuffer(c, "*Talk to the NPCs", 0x47);
+	g_Console.writeToBuffer(c, "Spacebar - Talk to the NPCs", 0x47);
 	c.Y += 0;
-	c.X = 20;
+	c.X = 30;
 	g_Console.writeToBuffer(c, "F - Flashlight", 0x47);
 
 }
@@ -1063,365 +1054,6 @@ void lastmap()
 {
 	currentlevel++;
 	loadMap = true;
-}
-
-void beginningcutscene() //beginning cutscence 
-{
-	//COORD c = g_Console.getConsoleSize();
-
-	//int height = 0;
-	//int width = 0;
-
-	////1st frame 
-	//if (currentScene == SCENE1)
-	//{
-	//	ifstream file("animate/frame_1st.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	////2nd frame 
-	//if (g_dElapsedTime >= 3.0 && g_dElapsedTime < 6.0)
-	//{
-	//	currentScene = SCENE2;
-
-	//	ifstream file("animate/frame_2nd.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 6.0 && g_dElapsedTime < 9.0)
-	//{
-	//	currentScene = SCENE3;
-
-	//	ifstream file("animate/frame_3rd.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-	//
-	//if (g_dElapsedTime >= 9.0 && g_dElapsedTime < 14.0)
-	//{
-	//	currentScene = SCENE4;
-
-	//	ifstream file("animate/frame_4th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 14.0 && g_dElapsedTime < 17.0)
-	//{
-	//	currentScene = SCENE5;
-
-	//	ifstream file("animate/frame_5th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 17.0 && g_dElapsedTime < 19.0)
-	//{
-	//	currentScene = SCENE6;
-
-	//	ifstream file("animate/frame_6th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 19.0 && g_dElapsedTime < 21.0)
-	//{
-	//	currentScene = SCENE7;
-
-	//	ifstream file("animate/frame_7th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 21.0 && g_dElapsedTime < 23.0)
-	//{
-	//	currentScene = SCENE8;
-
-	//	ifstream file("animate/frame_8th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 23.0 && g_dElapsedTime < 25.0)
-	//{
-	//	currentScene = SCENE9;
-
-	//	ifstream file("animate/frame_9th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 25.0 && g_dElapsedTime < 27.0)
-	//{
-	//	currentScene = SCENE10;
-
-	//	ifstream file("animate/frame_10th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 27.0 && g_dElapsedTime < 30.0)
-	//{
-	//	currentScene = SCENE11;
-
-	//	ifstream file("animate/frame_11th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 30.0 && g_dElapsedTime < 33.0)
-	//{
-	//	currentScene = SCENE12;
-
-	//	ifstream file("animate/frame_12th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 33.0 && g_dElapsedTime < 37.0)
-	//{
-	//	currentScene = SCENE13;
-
-	//	ifstream file("animate/frame_13th.txt");
-	//	if (file.is_open())
-	//	{
-	//		while (height < 19)
-	//		{
-	//			while (width < 77)
-	//			{
-	//				file >> ani[width][height];
-	//				width++;
-	//			}
-	//			width = 0;
-	//			height++;
-	//		}
-	//		file.close();
-	//	}
-	//}
-
-	//if (g_dElapsedTime >= 37.0)
-	//{
-	//	g_eGameState = S_SPLASHSCREEN;
-	//}
-}
-
-void rendercutscene()
-{
-	/*COORD c = g_Console.getConsoleSize();
-
-	for (int y = 0; y < 19; y++)
-	{
-		c.Y = y;
-		for (int x = 0; x < 77; x++)
-		{
-
-			if (ani[x][y] == '0')
-			{
-				ani[x][y] = ' ';
-			}
-
-			c.X = x;
-			g_Console.writeToBuffer(c, ani[x][y]);
-		}
-	}
-
-	if (currentScene == SCENE4)
-	{
-		for (int y = 0; y < 19; y++)
-		{
-			c.Y = y;
-			for (int x = 0; x < 77; x++)
-			{
-				if (ani[x][y] == '0')
-				{
-					ani[x][y] = ' ';
-				}
-				if (ani[x][y] == 'K')
-				{
-					ani[x][y] = '?';
-				}
-				if (ani[x][y] == 'J')
-				{
-					ani[x][y] = '!';
-				}
-
-				c.X = x;
-				g_Console.writeToBuffer(c, ani[x][y]);
-			}
-		}
-
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 13;
-		g_Console.writeToBuffer(c, "Get lost old hag", 0x74);
-
-	}
-
-	if (currentScene == SCENE13)
-	{
-		for (int y = 0; y < 19; y++)
-		{
-			c.Y = y;
-			for (int x = 0; x < 77; x++)
-			{
-				if (ani[x][y] == '0')
-				{
-					ani[x][y] = ' ';
-				}
-				c.X = x;
-				g_Console.writeToBuffer(c, ani[x][y]);
-			}
-		}
-
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 37;
-		g_Console.writeToBuffer(c, "Kekeke...lets see if he can...", 0x74);
-	}*/
 }
 
 void rendercongratz()
